@@ -65,6 +65,14 @@
       <option value="Cicalengka">Cicalengka - Rp 20.000</option>
       <option value="Kadipaten">Kadipaten - Rp 25.000</option>
     </select>
+    
+    <!-- Tambahan metode pembayaran -->
+    <select id="paymentMethod">
+      <option value="">Pilih Metode Pembayaran</option>
+      <option value="COD">COD (Bayar di Tempat)</option>
+      <option value="Transfer">Transfer Bank</option>
+    </select>
+    
     <p id="ongkir"></p>
     <p id="total"></p>
     <button onclick="checkout()">Kirim Pesanan via WhatsApp</button>
@@ -72,6 +80,7 @@
   <h3>Rekening Pembayaran</h3>
   <p>Mandiri: <b>1300062044600</b> a/n Aditia Suryawan</p>
   <p>BCA: <b>3371777626</b> a/n Aditia Suryawan</p>
+  <p><u>MOHON LAMPIRKAN BUKTI TRANSFER DI WA JIKA PEMBAYARAN DENGAN TRANSFER</u></p>
 </aside>
 
 <script>
@@ -210,7 +219,11 @@ function checkout(){
   const addr=document.getElementById("custAddr").value;
   const phone=document.getElementById("custPhone").value;
   const kec=document.getElementById("kecamatan").value;
-  if(!name||!addr||!phone||!kec){ alert("Lengkapi data checkout dulu"); return; }
+  const payment=document.getElementById("paymentMethod").value;
+  if(!name||!addr||!phone||!kec||!payment){ 
+    alert("Lengkapi semua data checkout termasuk metode pembayaran"); 
+    return; 
+  }
 
   // kurangi stok
   cart.forEach(item=>{
@@ -225,10 +238,11 @@ function checkout(){
   msg+=`Subtotal: Rp ${subtotal.toLocaleString()}\n`;
   msg+=`Ongkir ${kec}: Rp ${shippingRates[kec].toLocaleString()}\n`;
   msg+=`Total: Rp ${total.toLocaleString()}\n\n`;
-  msg+=`Nama: ${name}\nAlamat: ${addr}\nHP: ${phone}`;
+  msg+=`Nama: ${name}\nAlamat: ${addr}\nHP: ${phone}\n`;
+  msg+=`Metode Pembayaran: ${payment}`;
 
   // buka WA
-  window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`);
+  window.open(`https://wa.me/6285222044600?text=${encodeURIComponent(msg)}`);
 
   // reset keranjang
   cart=[]; saveCart(); renderCart(); renderProducts();
@@ -236,5 +250,6 @@ function checkout(){
 
 renderCategories(); renderProducts(); renderCart();
 </script>
+
 </body>
 </html>
