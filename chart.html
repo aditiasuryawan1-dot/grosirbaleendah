@@ -57,15 +57,19 @@
     }
     .checkout {
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 10px;
       margin-top: 15px;
     }
+    .checkout label { font-weight: bold; margin-top: 8px; }
+    .checkout select, .checkout input {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
     .checkout a, .checkout button {
-      flex: 1;
       text-align: center;
-      padding: 10px;
+      padding: 12px;
       background: #df0901;
       color: white;
       border: none;
@@ -75,6 +79,13 @@
       cursor: pointer;
     }
     .checkout a:hover, .checkout button:hover { background: #b30700; }
+    .rekening {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -97,7 +108,32 @@
       <tbody></tbody>
     </table>
     <div class="total" id="cartTotal">Total: Rp 0</div>
+
     <div class="checkout">
+      <label for="kecamatan">Pilih Kecamatan:</label>
+      <select id="kecamatan" onchange="renderCart()">
+        <option value="">-- Pilih Kecamatan --</option>
+        <option value="Baleendah">Baleendah - Rp 10.000</option>
+        <option value="Dayeuhkolot">Dayeuhkolot - Rp 12.000</option>
+        <option value="Bojongsoang">Bojongsoang - Rp 15.000</option>
+        <option value="Cicalengka">Cicalengka - Rp 20.000</option>
+        <option value="Kadipaten">Kadipaten - Rp 25.000</option>
+      </select>
+
+      <label for="payment">Metode Pembayaran:</label>
+      <select id="payment">
+        <option value="">-- Pilih Metode Pembayaran --</option>
+        <option value="COD">COD (Bayar di Tempat)</option>
+        <option value="Transfer">Transfer Bank</option>
+      </select>
+
+      <div class="rekening">
+        <b>Rekening Pembayaran:</b><br>
+        Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
+        BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
+        <u>Mohon lampirkan bukti transfer di WhatsApp</u>
+      </div>
+
       <a href="index.html">← Kembali Belanja</a>
       <button onclick="checkout()">Checkout via WhatsApp</button>
     </div>
@@ -106,21 +142,29 @@
   <script>
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+    const shippingRates = {
+      "Baleendah": 10000,
+      "Dayeuhkolot": 12000,
+      "Bojongsoang": 15000,
+      "Cicalengka": 20000,
+      "Kadipaten": 25000
+    };
+
     function renderCart(){
       const tbody = document.querySelector("#cartTable tbody");
       tbody.innerHTML = "";
-      let total = 0;
+      let subtotal = 0;
 
       cart.forEach((item, index) => {
-        const subtotal = item.price * item.qty;
-        total += subtotal;
+        const itemSubtotal = item.price * item.qty;
+        subtotal += itemSubtotal;
 
         tbody.innerHTML += `
           <tr>
             <td>${item.name}</td>
             <td>Rp ${item.price.toLocaleString()}</td>
             <td>${item.qty}</td>
-            <td>Rp ${subtotal.toLocaleString()}</td>
+            <td>Rp ${itemSubtotal.toLocaleString()}</td>
             <td class="actions">
               <button class="btn-plus" onclick="plusItem(${index})">+</button>
               <button class="btn-minus" onclick="minusItem(${index})">-</button>
@@ -130,7 +174,14 @@
         `;
       });
 
-      document.getElementById("cartTotal").innerText = "Total: Rp " + total.toLocaleString();
+      const kecamatan = document.getElementById("kecamatan").value;
+      const ongkir = shippingRates[kecamatan] || 0;
+      const total = subtotal + ongkir;
+
+      document.getElementById("cartTotal").innerText =
+        "Subtotal: Rp " + subtotal.toLocaleString() +
+        (ongkir ? " + Ongkir: Rp " + ongkir.toLocaleString() : "") +
+        " = Total: Rp " + total.toLocaleString();
     }
 
     function plusItem(index){
@@ -165,12 +216,27 @@
         alert("Keranjang masih kosong!");
         return;
       }
+      const kecamatan = document.getElementById("kecamatan").value;
+      const payment = document.getElementById("payment").value;
+      if(!kecamatan || !payment){
+        alert("Pilih kecamatan dan metode pembayaran!");
+        return;
+      }
+
       let message = "Assalamu'alaikum, saya ingin pesan:%0A";
       cart.forEach(item => {
         message += `- ${item.name} (${item.qty} x Rp${item.price.toLocaleString()})%0A`;
       });
-      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const ongkir = shippingRates[kecamatan] || 0;
+      const total = subtotal + ongkir;
+
+      message += `%0ASubtotal: Rp ${subtotal.toLocaleString()}`;
+      message += `%0AOngkir (${kecamatan}): Rp ${ongkir.toLocaleString()}`;
       message += `%0ATotal: Rp ${total.toLocaleString()}`;
+      message += `%0AMetode Pembayaran: ${payment}`;
+
       window.open(`https://wa.me/628997944479?text=${message}`, "_blank");
     }
 
@@ -178,4 +244,5 @@
   </script>
 </body>
 </html>
+
 
