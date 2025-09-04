@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>grosirbaleendah.com</title>
-   <style>
+  <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       margin: 0;
@@ -11,7 +11,6 @@
       background: #01ec28;
       color: #290101;
     }
-
     header {
       background: #0a1327;
       color: white;
@@ -19,9 +18,7 @@
       padding: 15px;
     }
     header h1 { margin: 0; font-size: 28px; }
-    header h4 { margin: 5px 0; font-weight: normal; font-size: 16px; }
     marquee { color: yellow; font-weight: bold; font-size: 14px; }
-
     nav {
       background: #df0901;
       display: flex;
@@ -38,7 +35,6 @@
       font-size: 14px;
     }
     nav button:hover { background: #2c3e50; }
-
     #controls {
       display: flex;
       justify-content: center;
@@ -52,14 +48,12 @@
       border: 1px solid #ccc;
       font-size: 14px;
     }
-
     #products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
       padding: 15px;
     }
-
     .product {
       background: white;
       padding: 10px;
@@ -81,63 +75,22 @@
       font-size: 14px;
     }
     .product button:hover { background: #1a252f; }
-
-    #cart {
-      background: white;
-      border-top: 2px solid #ccc;
-      padding: 10px;
-      margin-top: 10px;
-    }
-    #cart h2 { text-align: center; margin-top: 0; }
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 5px 0;
-      font-size: 14px;
-    }
-    .cart-item input {
-      width: 40px;
+    .pagination { text-align: center; margin: 10px; }
+    .pagination button { margin: 2px; padding: 5px 10px; font-size: 14px; }
+    .to-cart {
+      display: block;
       text-align: center;
+      margin: 15px;
     }
-
-    .pagination {
-      text-align: center;
-      margin: 10px;
+    .to-cart a {
+      background: #df0901;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
     }
-    .pagination button {
-      margin: 2px;
-      padding: 5px 10px;
-      font-size: 14px;
-    }
-
-    #checkout {
-      margin-top: 10px;
-    }
-    #checkout input, #checkout select {
-      width: 100%;
-      margin-bottom: 8px;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    /* === DESKTOP MODE === */
-    @media (min-width: 769px) {
-      body { padding-right: 340px; } /* biar tidak ketutup cart */
-      #cart {
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 320px;
-        height: 100%;
-        border-left: 2px solid #ccc;
-        border-top: none;
-        overflow-y: auto;
-        box-shadow: -2px 0 6px rgba(0,0,0,0.15);
-      }
-    }
+    .to-cart a:hover { background: #b30700; }
   </style>
 </head>
 <body>
@@ -163,39 +116,9 @@
 <div id="products"></div>
 <div class="pagination" id="pagination"></div>
 
-<aside id="cart">
-  <h2>Keranjang</h2>
-  <div id="cartItems"></div>
-  <p id="subtotal"></p>
-  <div id="checkout">
-    <input type="text" id="custName" placeholder="Nama">
-    <input type="text" id="custAddr" placeholder="Alamat">
-    <input type="text" id="custPhone" placeholder="No HP">
-    <select id="kecamatan">
-      <option value="">Pilih Kecamatan</option>
-      <option value="Baleendah">Baleendah - Rp 10.000</option>
-      <option value="Dayeuhkolot">Dayeuhkolot - Rp 12.000</option>
-      <option value="Pameungpeuk">Pameungpeuk - Rp 15.000</option>
-      <option value="Banjaran">Banjaran - Rp 20.000</option>
-      
-    </select>
-    
-    <!-- Tambahan metode pembayaran -->
-    <select id="paymentMethod">
-      <option value="">Pilih Metode Pembayaran</option>
-      <option value="COD">COD (Bayar di Tempat)</option>
-      <option value="Transfer">Transfer Bank</option>
-    </select>
-    
-    <p id="ongkir"></p>
-    <p id="total"></p>
-    <button onclick="checkout()">Kirim Pesanan via WhatsApp</button>
-  </div>
-  <h3>Rekening Pembayaran</h3>
-  <p>Mandiri: <b>1300062044600</b> a/n Aditia Suryawan</p>
-  <p>BCA: <b>3371777626</b> a/n Aditia Suryawan</p>
-  <p><strong><i>Mohon melampiran bukti pembayaran diwa, jika bayar dengan TF</i></strong></p>
-</aside>
+<div class="to-cart">
+  <a href="cart.html">Lihat Keranjang</a>
+</div>
 
 <script>
 const productsData = [
@@ -216,28 +139,17 @@ const perPage = 6;
 let currentCategory = "";
 let searchQuery = "";
 let sortOption = "";
-let total = 0;
-
-const shippingRates = {
-  "Baleendah":10000,
-  "Dayeuhkolot":12000,
-  "Bojongsoang":15000,
-  "Cicalengka":20000,
-  "Kadipaten":25000
-};
 
 function renderCategories(){
   const nav = document.getElementById("categoryNav");
   const cats = ["Semua", ...new Set(productsData.map(p=>p.category))];
   nav.innerHTML = cats.map(c=>`<button onclick="filterCategory('${c}')">${c}</button>`).join("");
 }
-
 function filterCategory(cat){
   currentCategory = (cat==="Semua")?"":cat;
   currentPage = 1;
   renderProducts();
 }
-
 function renderProducts(){
   let data = [...productsData];
   if(currentCategory) data = data.filter(p=>p.category===currentCategory);
@@ -266,9 +178,7 @@ function renderProducts(){
   document.getElementById("pagination").innerHTML =
     Array.from({length:totalPages},(_,i)=>`<button onclick="gotoPage(${i+1})">${i+1}</button>`).join("");
 }
-
 function gotoPage(p){ currentPage=p; renderProducts(); }
-
 function addToCart(id){
   const prod = productsData.find(p=>p.id===id);
   const existing = cart.find(c=>c.id===id);
@@ -285,84 +195,16 @@ function addToCart(id){
     }
     cart.push({...prod, qty:1});
   }
-  saveCart(); renderCart();
+  localStorage.setItem("cart",JSON.stringify(cart));
+  alert(prod.name+" ditambahkan ke keranjang!");
 }
-
-function renderCart(){
-  document.getElementById("cartItems").innerHTML = cart.map((item,i)=>`
-    <div class="cart-item">
-      <span>${item.name} (x${item.qty})</span>
-      <span>
-        <input type="number" value="${item.qty}" min="1" style="width:40px"
-          onchange="updateQty(${i}, this.value)">
-        <button onclick="removeItem(${i})">X</button>
-      </span>
-    </div>
-  `).join("");
-  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  document.getElementById("subtotal").innerText = "Subtotal: Rp "+subtotal.toLocaleString();
-  const kec = document.getElementById("kecamatan").value;
-  const ongkir = shippingRates[kec]||0;
-  total = subtotal+ongkir;
-  document.getElementById("ongkir").innerText = kec?"Ongkir: Rp "+ongkir.toLocaleString():"";
-  document.getElementById("total").innerText = "Total: Rp "+total.toLocaleString();
-}
-
-function updateQty(index,val){
-  const prod = productsData.find(p=>p.id===cart[index].id);
-  if(val>prod.stock){
-    alert("Stok tersedia hanya "+prod.stock);
-    cart[index].qty = prod.stock;
-  } else {
-    cart[index].qty = parseInt(val);
-  }
-  saveCart(); renderCart();
-}
-
-function removeItem(i){ cart.splice(i,1); saveCart(); renderCart(); }
-
-function saveCart(){ localStorage.setItem("cart",JSON.stringify(cart)); }
 
 document.getElementById("search").addEventListener("input",e=>{ searchQuery=e.target.value; currentPage=1; renderProducts(); });
 document.getElementById("sort").addEventListener("change",e=>{ sortOption=e.target.value; renderProducts(); });
-document.getElementById("kecamatan").addEventListener("change",renderCart);
 
-function checkout(){
-  if(cart.length===0){ alert("Keranjang masih kosong"); return; }
-  const name=document.getElementById("custName").value;
-  const addr=document.getElementById("custAddr").value;
-  const phone=document.getElementById("custPhone").value;
-  const kec=document.getElementById("kecamatan").value;
-  const payment=document.getElementById("paymentMethod").value;
-  if(!name||!addr||!phone||!kec||!payment){ 
-    alert("Lengkapi semua data checkout termasuk metode pembayaran"); 
-    return; 
-  }
-
-  /* kurangi stok
-  cart.forEach(item=>{
-    const prod = productsData.find(p=>p.id===item.id);
-    if(prod){ prod.stock -= item.qty; if(prod.stock<0) prod.stock=0; }
-  });*/
-
-  // buat pesan
-  let msg=`Halo, saya mau pesan:\n`;
-  cart.forEach(item=>{ msg+=`${item.name} x${item.qty} = Rp ${(item.price*item.qty).toLocaleString()}\n`; });
-  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  msg+=`Subtotal: Rp ${subtotal.toLocaleString()}\n`;
-  msg+=`Ongkir ${kec}: Rp ${shippingRates[kec].toLocaleString()}\n`;
-  msg+=`Total: Rp ${total.toLocaleString()}\n\n`;
-  msg+=`Nama: ${name}\nAlamat: ${addr}\nHP: ${phone}\n`;
-  msg+=`Metode Pembayaran: ${payment}`;
-
-  // buka WA
-  window.open(`https://wa.me/6285222044600?text=${encodeURIComponent(msg)}`);
-
-  // reset keranjang
-  cart=[]; saveCart(); renderCart(); renderProducts();
-}
-
-renderCategories(); renderProducts(); renderCart();
+renderCategories(); renderProducts();
 </script>
 </body>
 </html>
+
+
