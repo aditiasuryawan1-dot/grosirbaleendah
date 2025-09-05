@@ -135,7 +135,7 @@
 </header>
 
 <nav id="categoryNav"></nav>
-<p id="head">Klik keranjang untuk belanja, lalu buka keranjang (ada dibawah) dan ubah jumlah sesuai kebutuhan, kemudian checkout...</p>
+<p id="head">Klik keranjang untuk belanja, kemudian lihat keranjang dan ubah jumlah sesuai kebutuhan, lanjutkan checkout...</p>
 
 <div id="controls">
   <input type="text" id="search" placeholder="Cari produk...">
@@ -156,7 +156,7 @@
 
 <script>
 const productsData = [
-    //Mie Indomie
+  //Mie Indomie
   {id:1, name:"Indomie Ayam Bawang", price:2825, category:"Makanan Instan", stock:10000, img:"image//makanan instan/Indomie Bawang.png"},
   {id:2, name:"Indomie Soto", price:2825, category:"Makanan Instan", stock:10000, img:"image/makanan instan/Indomie Soto.png"},
   {id:3, name:"Indomie Goreng", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/Indomie Goreng.jpg"},
@@ -192,8 +192,38 @@ const productsData = [
   {id:29, name:"Neslite Menthol", price:21200, category:"Roko", stock:10000, img:"image/roko/neslitementhol.png"},
   {id:31, name:"Camel Grap", price:25200, category:"Roko", stock:10000, img:"image/roko/camelungu.png"},
   {id:32, name:"Marlboro Black Kecil", price:23300, category:"Roko", stock:10000, img:"image/roko/marlboroBlackkecil.png"},
-  
   //Minuman Cup
+  {id:33, name:"Lavontea", price:850, category:"Minuman", stock:10000, img:"image/minumanCup/lavontea.png"},
+  {id:34, name:"Okky Jelly Drink", price:900, category:"Minuman", stock:10000, img:"image/minumanCup/okkyJD.png"},
+  {id:35, name:"Panther", price:900, category:"Minuman", stock:10000, img:"image/minumanCup/panther.png"},
+  {id:36, name:"Kopi Cup", price:1600, category:"Minuman", stock:10000, img:"image/minumanCup/kopikap.png"},
+  {id:37, name:"Ale - Ale", price:900, category:"Minuman", stock:10000, img:"image/minumanCup/ale-ale.png"},
+  {id:38, name:"Nata De Coco", price:1400, category:"Minuman", stock:10000, img:"image/minumanCup/nataDC.png"},
+  {id:39, name:"Jeruk Nipis Madu", price:3200, category:"Minuman", stock:10000, img:"image/roko/Amild.jpg"},
+  {id:40, name:"Mizone", price:3900, category:"Minuman", stock:10000, img:"image/roko/Amild Menthol.jpg"},
+  {id:41, name:"Milku", price:3850, category:"Minuman", stock:10000, img:"image/roko/jazybold.png"},
+  {id:42, name:"Golda", price:2950, category:"Minuman", stock:10000, img:"image/roko/GudangGM.png"},
+  {id:43, name:"Sierra Cup", price:425, category:"Minuman", stock:10000, img:"image/roko/Sampoernakretek.png"},
+  {id:44, name:"Sierra Botol 600ML", price:1625, category:"Minuman", stock:10000, img:"image/roko/Marlboromerah.png"},
+  {id:45, name:"Sierra Botol 1L", price:3200, category:"Minuman", stock:10000, img:"image/roko/neslitementhol.png"},
+  {id:46, name:"Stream Cup", price:400, category:"Minuman", stock:10000, img:"image/roko/camelungu.png"},
+  {id:47, name:"Stream Botol 600ML", price:1250, category:"Minuman", stock:10000, img:"image/roko/marlboroBlackkecil.png"},
+  {id:48, name:"Le Mineral 600ML", price:1925, category:"Minuman", stock:10000, img:"image/roko/MagnumFil.jpg"},
+  {id:49, name:"Le Mineral 1L", price:4350, category:"Minuman", stock:10000, img:"image/roko/Garam Filter.jpg"},
+  {id:50, name:"Floridina Kelapa", price:2500, category:"Minuman", stock:10000, img:"image/roko/Jarum Super.jpg"},
+  {id:51, name:"Floridina Jeruk", price:2500, category:"Minuman", stock:10000, img:"image/roko/Jarum Coklat.jpg"},
+  {id:52, name:"Pocari Sweet 350ML", price:6200, category:"Minuman", stock:10000, img:"image/roko/djisamsoeKretek.png"},
+  {id:53, name:"Montea", price:900, category:"Minuman", stock:10000, img:"image/roko/djisamsoeReffil.png"},
+  {id:54, name:"Ultra Milk 125ML", price:3000, category:"Minuman", stock:10000, img:"image/roko/Amild.jpg"},
+  {id:55, name:"Ultra Milk 200ML", price:4900, category:"Minuman", stock:10000, img:"image/roko/Amild Menthol.jpg"},
+  {id:56, name:"Teh Kotak", price:3600, category:"Minuman", stock:10000, img:"image/roko/jazybold.png"},
+  {id:57, name:"Teh Pucuk", price:2600, category:"Minuman", stock:10000, img:"image/roko/GudangGM.png"},
+  //kopi sachet
+  {id:58, name:"Sierra Cup", price:15500, category:"Roko", stock:10000, img:"image/roko/Sampoernakretek.png"},
+  {id:59, name:"Sierra Botol 600ML", price:49100, category:"Roko", stock:10000, img:"image/roko/Marlboromerah.png"},
+  {id:60, name:"Sierra Botol 1L", price:21200, category:"Roko", stock:10000, img:"image/roko/neslitementhol.png"},
+  {id:61, name:"Stream Cup", price:25200, category:"Roko", stock:10000, img:"image/roko/camelungu.png"},
+  {id:62, name:"Stream Botol 600ML", price:23300, category:"Roko", stock:10000, img:"image/roko/marlboroBlackkecil.png"},
   
 ];
 
@@ -270,9 +300,6 @@ renderCategories(); renderProducts();
 </script>
 </body>
 </html>
-
-
-
 
 
 
