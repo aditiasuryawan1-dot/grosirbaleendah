@@ -10,7 +10,6 @@
       padding: 0;
       background: #01ec28;
       color: #290101;
-      
     }
     header {
       background: #0a1327;
@@ -18,8 +17,8 @@
       text-align: center;
       padding: 15px;
     }
-    header h1 { margin: 0; font-size: 50px; }
-    marquee { color: yellow; font-weight: bold; font-size: 30px; }
+    header h1 { margin: 0; font-size: 40px; }
+    marquee { color: yellow; font-weight: bold; font-size: 24px; }
     nav {
       background: #df0901;
       display: flex;
@@ -33,7 +32,7 @@
       padding: 10px 15px;
       cursor: pointer;
       transition: 0.3s;
-      font-size: 30px;
+      font-size: 20px;
     }
     nav button:hover { background: #2c3e50; }
     #controls {
@@ -44,44 +43,70 @@
       margin: 15px;
     }
     #controls input, #controls select {
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 25px;
-    }
-    #products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
-      gap: 10px;
-      padding: 10px;
+      font-size: 18px;
     }
 
-    /*
+    /* Produk dalam carousel horizontal */
+    #products {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      padding: 15px;
+      scroll-snap-type: x mandatory;
+    }
+    #products::-webkit-scrollbar {
+      height: 8px;
+    }
+    #products::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
     .product {
-      margin-top: 6px;
+      flex: 0 0 220px;
+      scroll-snap-align: start;
       background: white;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 10px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s; 
-    } */
-    .product:hover { transform: translateY(-4px); }
-    .product img { max-width: 100%; border-radius: 6px; }
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product img {
+      max-width: 100%;
+      max-height: 160px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .product h4 {
+      font-size: 28px;
+      margin: 8px 0;
+    }
+    .product p {
+      margin: 4px 0;
+      font-size: 26px;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
     .product button {
-      
-      padding: 6px 10px;
+      margin-top: auto;
+      padding: 8px 10px;
       border: none;
       border-radius: 6px;
       background: #2c3e50;
       color: white;
       cursor: pointer;
-      font-size: 14px;
-      
+      font-size: 25px;
     }
     .product button:hover { background: #1a252f; }
+
     .pagination { text-align: center; margin: 10px; }
     .pagination button { margin: 2px; padding: 5px 10px; font-size: 14px; }
+
     .to-cart {
       display: block;
       text-align: center;
@@ -94,44 +119,23 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
-      font-size:x-large;
+      font-size: x-large;
     }
     .to-cart a:hover { background: #b30700; }
 
-    .product {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* jaga jarak atas-bawah */
-  margin-top: 6px;
-  background: white;
-  padding: 6px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
-
-.product button {
-  margin-top: auto; /* dorong tombol ke bawah */
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #2c3e50;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-}
+    #head {font-size: 28px; text-align: center; font-family:Arial, Helvetica, sans-serif}
   </style>
 </head>
 <body>
 
 <header>
   <h1>GROSIR BALEENDAH</h1>
-  <h1>WA 08997944479</h1>
-  <marquee>Belanja mudah, belanja cepat, cepat cuan!</marquee>
+  <h2>WA 08997944479</h2>
+  <marquee>Belanja cepat, mudah dan murah!</marquee>
 </header>
 
 <nav id="categoryNav"></nav>
+<p id="head">Klik keranjang untuk belanja, lalu buka keranjang (ada dibawah) dan ubah jumlah sesuai kebutuhan, kemudian checkout...</p>
 
 <div id="controls">
   <input type="text" id="search" placeholder="Cari produk...">
@@ -193,11 +197,9 @@ const productsData = [
   
 ];
 
-
-
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let currentPage = 1;
-const perPage = 8;
+const perPage = 100;
 let currentCategory = "";
 let searchQuery = "";
 let sortOption = "";
@@ -268,8 +270,6 @@ renderCategories(); renderProducts();
 </script>
 </body>
 </html>
-
-
 
 
 
