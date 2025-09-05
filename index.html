@@ -51,22 +51,25 @@
     }
     #products {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      padding: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+      gap: 10px;
+      padding: 10px;
     }
+
+    /*
     .product {
+      margin-top: 6px;
       background: white;
       padding: 10px;
       border-radius: 8px;
       text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
+      transition: transform 0.2s; 
+    } */
     .product:hover { transform: translateY(-4px); }
     .product img { max-width: 100%; border-radius: 6px; }
     .product button {
-      margin-top: 6px;
+      
       padding: 6px 10px;
       border: none;
       border-radius: 6px;
@@ -74,6 +77,7 @@
       color: white;
       cursor: pointer;
       font-size: 14px;
+      
     }
     .product button:hover { background: #1a252f; }
     .pagination { text-align: center; margin: 10px; }
@@ -93,6 +97,32 @@
       font-size:x-large;
     }
     .to-cart a:hover { background: #b30700; }
+
+    .product {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* jaga jarak atas-bawah */
+  margin-top: 6px;
+  background: white;
+  padding: 6px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition:height: 300px; /* bikin tinggi kotak seragam */ 
+  transform 0.2s;
+
+}
+
+.product button {
+  margin-top: auto; /* dorong tombol ke bawah */
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #2c3e50;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
   </style>
 </head>
 <body>
@@ -119,25 +149,57 @@
 <div class="pagination" id="pagination"></div>
 
 <div class="to-cart">
-  <a href="chart.html">Lihat Keranjang</a>
+  <a href="cart.html">Lihat Keranjang</a>
 </div>
 
 <script>
 const productsData = [
-  {id:1, name:"Beras 5kg", price:60000, category:"Sembako", stock:5, img:"https://via.placeholder.com/200"},
-  {id:2, name:"Minyak Goreng 2L", price:32000, category:"Sembako", stock:500, img:"https://via.placeholder.com/200"},
-  {id:3, name:"Teh Botol", price:5000, category:"Minuman", stock:200, img:"https://via.placeholder.com/200"},
-  {id:4, name:"Kopi Sachet", price:2000, category:"Minuman", stock:500, img:"https://via.placeholder.com/200"},
-  {id:5, name:"Snack Ring", price:8000, category:"Snack", stock:150, img:"https://via.placeholder.com/200"},
-  {id:6, name:"Rokok Filter", price:25000, category:"Roko", stock:100, img:"https://via.placeholder.com/200"},
-  {id:7, name:"Paracetamol", price:3000, category:"Obat", stock:250, img:"https://via.placeholder.com/200"},
-  {id:8, name:"Sapu", price:20000, category:"Alat Rumah Tangga", stock:80, img:"https://via.placeholder.com/200"},
-  {id:9, name:"Lampu LED", price:15000, category:"Alat Listrik", stock:120, img:"https://via.placeholder.com/200"},
+    //Mie Indomie
+  {id:1, name:"Indomie Ayam Bawang", price:2825, category:"Makanan Instan", stock:10000, img:"image//makanan instan/Indomie Bawang.png"},
+  {id:2, name:"Indomie Soto", price:2825, category:"Makanan Instan", stock:10000, img:"image/makanan instan/Indomie Soto.png"},
+  {id:3, name:"Indomie Goreng", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/Indomie Goreng.jpg"},
+  {id:4, name:"Indomie Empal Gentong", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/indomie empal gentong.png"},
+  {id:5, name:"Indomie Rendang", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/rendang.png"},
+  {id:6, name:"Indomie Aceh", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/aceh.png"},
+  {id:7, name:"Indomie Sambal Ijo", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/cabeijo.png"},
+  {id:8, name:"Indomie Kocok Bandung", price:2900, category:"Makanan Instan", stock:10000, img:"image/makanan instan/kocokbandung.png"},
+  //Mie Sedap
+  {id:9, name:"Sedap Ayam Bawang", price:2725, category:"Makanan Instan", stock:10000, img:"image/makanan instan/sedapAB.png"},
+  {id:10, name:"Sedap Goreng", price:2850, category:"Makanan Instan", stock:10000, img:"image/makanan instan/sedapGor.png"},
+  {id:11, name:"Sedap Korea", price:2850, category:"Makanan Instan", stock:10000, img:"image/makanan instan/sedapKorea.png"},
+  //Mie Sukses
+  {id:12, name:"Sukses Ayam bawang", price:3500, category:"Makanan Instan", stock:10000, img:"image/makanan instan/suksesAB.png"},
+  {id:13, name:"Sukses Rendang", price:3625, category:"Makanan Instan", stock:10000, img:"image/makanan instan/suksesRen.png"},
+  {id:14, name:"Sukses Goreng", price:3625, category:"Makanan Instan", stock:10000, img:"image/makanan instan/suksesGor.png"},
+  //Pop Mie
+  {id:15, name:"Pop Mie Ayam Bawang", price:4350, category:"Makanan Instan", stock:10000, img:"image/makanan instan/popmieAB.png"},
+  {id:16, name:"Pop Mie Soto", price:4350, category:"Makanan Instan", stock:10000, img:"image/makanan instan/popmieSot.png"},
+  //Roko
+  {id:17, name:"Magnum Filter", price:25500, category:"Roko", stock:10000, img:"image/roko/MagnumFil.jpg"},
+  {id:18, name:"Garam Filter", price:25500, category:"Roko", stock:10000, img:"image/roko/Garam Filter.jpg"},
+  {id:19, name:"Djarum Super", price:23300, category:"Roko", stock:10000, img:"image/roko/Jarum Super.jpg"},
+  {id:20, name:"Djarum Coklat", price:16300, category:"Roko", stock:10000, img:"image/roko/Jarum Coklat.jpg"},
+  {id:21, name:"Djisamsoe", price:19600, category:"Roko", stock:10000, img:"image/roko/djisamsoeKretek.png"},
+  {id:22, name:"Djisamsoe Reffil", price:21500, category:"Roko", stock:10000, img:"image/roko/djisamsoeReffil.png"},
+  {id:23, name:"A Mild Merah", price:34350, category:"Roko", stock:10000, img:"image/roko/Amild.jpg"},
+  {id:24, name:"A Mild Menthol", price:34350, category:"Roko", stock:10000, img:"image/roko/Amild Menthol.jpg"},
+  {id:25, name:"Jazy Bold", price:26500, category:"Roko", stock:10000, img:"image/roko/jazybold.png"},
+  {id:26, name:"Garam Merah", price:15000, category:"Roko", stock:10000, img:"image/roko/GudangGM.png"},
+  {id:27, name:"Sampoerna Kretek", price:15500, category:"Roko", stock:10000, img:"image/roko/Sampoernakretek.png"},
+  {id:28, name:"Marlboro Merah", price:49100, category:"Roko", stock:10000, img:"image/roko/Marlboromerah.png"},
+  {id:29, name:"Neslite Menthol", price:21200, category:"Roko", stock:10000, img:"image/roko/neslitementhol.png"},
+  {id:31, name:"Camel Grap", price:25200, category:"Roko", stock:10000, img:"image/roko/camelungu.png"},
+  {id:32, name:"Marlboro Black Kecil", price:23300, category:"Roko", stock:10000, img:"image/roko/marlboroBlackkecil.png"},
+  
+  //Minuman Cup
+  
 ];
+
+
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let currentPage = 1;
-const perPage = 6;
+const perPage = 60;
 let currentCategory = "";
 let searchQuery = "";
 let sortOption = "";
