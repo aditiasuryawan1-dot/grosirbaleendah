@@ -32,7 +32,7 @@
       padding: 10px 15px;
       cursor: pointer;
       transition: 0.3s;
-      font-size: 40px;
+      font-size: 30px;
     }
     nav button:hover { background: #2c3e50; }
     #controls {
@@ -46,28 +46,20 @@
       padding: 8px 12px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 25px;
+      font-size: 20px;
     }
 
-    /* Produk dalam carousel horizontal */
+    /* Produk grid dengan scroll 2 arah */
     #products {
-      display: flex;
-      overflow-x: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 15px;
       padding: 15px;
-      scroll-snap-type: x mandatory;
-    }
-    #products::-webkit-scrollbar {
-      height: 8px;
-    }
-    #products::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 4px;
+      max-height: 80vh;   /* batas tinggi */
+      overflow: auto;     /* bisa scroll ke segala arah */
     }
 
     .product {
-      flex: 0 0 220px;
-      scroll-snap-align: start;
       background: white;
       padding: 12px;
       border-radius: 10px;
@@ -84,13 +76,13 @@
       border-radius: 6px;
     }
     .product h4 {
-      font-size: 28px;
+      font-size: 20px;
       margin: 8px 0;
     }
     .product p {
       margin: 4px 0;
-      font-size: 26px;
-      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
     }
     .product button {
       margin-top: auto;
@@ -100,12 +92,9 @@
       background: #2c3e50;
       color: white;
       cursor: pointer;
-      font-size: 25px;
+      font-size: 18px;
     }
     .product button:hover { background: #1a252f; }
-
-    .pagination { text-align: center; margin: 10px; }
-    .pagination button { margin: 2px; padding: 5px 10px; font-size: 14px; }
 
     .to-cart {
       display: block;
@@ -123,7 +112,7 @@
     }
     .to-cart a:hover { background: #b30700; }
 
-    #head {font-size: 28px; text-align: center; font-family:Arial, Helvetica, sans-serif}
+    #head {font-size: 22px; text-align: center;}
   </style>
 </head>
 <body>
@@ -148,7 +137,6 @@
 </div>
 
 <div id="products"></div>
-<div class="pagination" id="pagination"></div>
 
 <div class="to-cart">
   <a href="cart.html">Lihat Keranjang</a>
@@ -221,14 +209,68 @@ const productsData = [
   {id:58, name:"Sierra 220ML", price:825, category:"Minuman", stock:10000, img:"image/minuman/sierra220.png"},
   {id:59, name:"Aqua Botol 600ML", price:2150, category:"Minuman", stock:10000, img:"image/minuman/aqua600.png"},
   {id:59, name:"Aqua Botol 1L", price:4500, category:"Minuman", stock:10000, img:"image/minuman/aqua1l.png"},
-
   //kopi sachet
-  
+  {id:59, name:"Kapal Api Mix", price:1725, category:"Kopi", stock:10000, img:"image/kopi/kaS.jpg"},
+  {id:59, name:"Luwak", price:1500, category:"Kopi", stock:10000, img:"image/kopi/Luwak.jpg"},
+  {id:59, name:"Indocafe Coffemix", price:1500, category:"Kopi", stock:10000, img:"image/kopi/indocafe.jpg"},
+  {id:59, name:"Good Day Mocacino", price:1500, category:"Kopi", stock:10000, img:"image/kopi/GD mocacino.jpg"},
+  {id:59, name:"Good Day Capucino", price:2150, category:"Kopi", stock:10000, img:"image/kopi/GD capu.png"},
+  {id:59, name:"Abc Susu", price:1750, category:"Kopi", stock:10000, img:"image/kopi/abc susu.png"},
+  {id:59, name:"Frisian Flag Putih", price:1250, category:"Kopi", stock:10000, img:"image/kopi/ff.png"},
+  {id:59, name:"Dancow Putih", price:3200, category:"Kopi", stock:10000, img:"image/kopi/D.png"},
+  {id:59, name:"Energen Coklat", price:1900, category:"Kopi", stock:10000, img:"image/kopi/ec.png"},
+  {id:59, name:"Energen Vanilla", price:1900, category:"Kopi", stock:10000, img:"image/kopi/energen v.png"},
+  {id:59, name:"Sariwangi", price:875, category:"Kopi", stock:10000, img:"image/kopi/sariwangi.png"},
+  //snack
+  {id:59, name:"Beng-Beng", price:2150, category:"Snack", stock:10000, img:"image/snack/beng2.png"},
+  {id:59, name:"Kalpa", price:1800, category:"Snack", stock:10000, img:"image/snack/kalpa.png"},
+  {id:59, name:"Choki-Choki", price:900, category:"Snack", stock:10000, img:"image/snack/Choki2.png"},
+  {id:59, name:"Nabati", price:1800, category:"Snack", stock:10000, img:"image/snack/nabati.png"},
+  {id:59, name:"Taro", price:900, category:"Snack", stock:10000, img:"image/snack/taro.png"},
+  {id:59, name:"Chitato", price:1750, category:"Snack", stock:10000, img:"image/snack/Chitato.png"},
+  {id:59, name:"Chitato Lite", price:1750, category:"Snack", stock:10000, img:"image/snack/citatoL.png"},
+  {id:59, name:"French Fries", price:1750, category:"Snack", stock:10000, img:"image/snack/frenchf.png"},
+  {id:59, name:"Ciki Balls", price:1700, category:"Snack", stock:10000, img:"image/snack/cikiball.png"},
+  {id:59, name:"Sip", price:1750, category:"Snack", stock:10000, img:"image/snack/sip.png"},
+  {id:59, name:"Oreo Bolu", price:1850, category:"Snack", stock:10000, img:"image/snack/oreobolu.png"},
+  {id:59, name:"Oreo Biskuit", price:1850, category:"Snack", stock:10000, img:"image/snack/oreobis.png"},
+  {id:59, name:"Malkist Coklat", price:950, category:"Snack", stock:10000, img:"image/snack/malkisCk.png"},
+  {id:59, name:"Astor Mini", price:1800, category:"Snack", stock:10000, img:"image/snack/astor.png"},
+  {id:59, name:"Roti Aoka", price:1800, category:"Snack", stock:10000, img:"image/snack/roti aoka.png"},
+  //sembako
+  {id:59, name:"Beras BK 5Kg Hijau", price:73500, category:"Sembako", stock:10000, img:"image/sembako/berasBk.png"},
+  {id:59, name:"Beras BK 5Kg Kuning", price:76000, category:"Sembako", stock:10000, img:"image/sembako/berasbk kuning.png"},
+  {id:59, name:"Beras Curah Premium 25Kg", price:16000, category:"Sembako", stock:10000, img:"image/sembako/beras.jpg"},
+  {id:59, name:"Beras Curah 25Kg", price:15500, category:"Sembako", stock:10000, img:"image/sembako/beras.jpg"},
+  {id:59, name:"Minyak Kita 1L", price:16300, category:"Sembako", stock:10000, img:"image/sembako/minyak kita 1L.jpg"},
+  {id:59, name:"Minyak Kita 2L", price:33000, category:"Sembako", stock:10000, img:"image/sembako/minyakkita2l.png"},
+  {id:59, name:"Terigu Segi Tiga 1Kg", price:9000, category:"Sembako", stock:10000, img:"image/sembako/terigusegitiga.png"},
+  {id:59, name:"Tepung Tapioka Pratama(ACI)", price:8500, category:"Sembako", stock:10000, img:"image/sembako/acipratama.png"},
+  //bumbu
+  {id:59, name:"Bango Sachet", price:850, category:"Bumbu", stock:10000, img:"image/bumbu/kecpbanren.png"},
+  {id:59, name:"Bango Reffil", price:2450, category:"Bumbu", stock:10000, img:"image/bumbu/kecapbanref.png"},
+  {id:59, name:"Sambal Uleg Sachet", price:11150, category:"Bumbu", stock:10000, img:"image/bumbu/sambalulegsac.png"},
+  {id:59, name:"Bon Cabe", price:1050, category:"Bumbu", stock:10000, img:"image/bumbu/bon cabe.png"},
+  //perlengkapan rumah{id:59, name:"Beras BK 5Kg Hijau", price:73500, category:"Sembako", stock:10000, img:"image/sembako/berasBk.png"},
+  {id:59, name:"Sunlight 92gr", price:1700, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/sunlight92.png"},
+  {id:59, name:"Sunlight 230gr", price:4300, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/sunlight230.png"},
+  {id:59, name:"Mama Lime 105ml", price:1650, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/mamalime105.png"},
+  {id:59, name:"Mama Lime 230ml", price:3350, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/mamalime230.png"},
+  {id:59, name:"Life Boy Cair", price:4350, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/lifeboycair.png"},
+  {id:59, name:"Daia Sachet", price:850, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/daiasac.png"},
+  {id:59, name:"Rinso Sachet", price:850, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/rinsos.png"},
+  {id:59, name:"Rinso Cair Sachet", price:850, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/rinsocairsac.png"},
+  {id:59, name:"So Klin Liquid", price:450, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/so klin liquid.png"},
+  {id:59, name:"So Klin Lantai", price:400, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/soklinlantaisac.png"},
+  {id:59, name:"Super Sol", price:450, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/supersolsac.png"},
+  {id:59, name:"Royale", price:450, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/royale sac.png"},
+  {id:59, name:"Downy", price:450, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/downysac.png"},
+  {id:59, name:"Molto", price:450, category:"Alat & Bahan Kebersihan", stock:10000, img:"image/alat&bahan kebersihan/moltosac.png"},
+
+  //listrik
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let currentPage = 1;
-const perPage = 100;
 let currentCategory = "";
 let searchQuery = "";
 let sortOption = "";
@@ -240,7 +282,6 @@ function renderCategories(){
 }
 function filterCategory(cat){
   currentCategory = (cat==="Semua")?"":cat;
-  currentPage = 1;
   renderProducts();
 }
 function renderProducts(){
@@ -251,12 +292,7 @@ function renderProducts(){
   if(sortOption==="desc") data.sort((a,b)=>b.price-a.price);
   if(sortOption==="new") data.sort((a,b)=>b.id-a.id);
 
-  const totalPages = Math.ceil(data.length/perPage);
-  if(currentPage>totalPages) currentPage=totalPages||1;
-  const start = (currentPage-1)*perPage;
-  const pageData = data.slice(start, start+perPage);
-
-  document.getElementById("products").innerHTML = pageData.map(p=>`
+  document.getElementById("products").innerHTML = data.map(p=>`
     <div class="product">
       <img src="${p.img}" alt="${p.name}">
       <h4>${p.name}</h4>
@@ -267,11 +303,8 @@ function renderProducts(){
       </button>
     </div>
   `).join("");
-
-  document.getElementById("pagination").innerHTML =
-    Array.from({length:totalPages},(_,i)=>`<button onclick="gotoPage(${i+1})">${i+1}</button>`).join("");
 }
-function gotoPage(p){ currentPage=p; renderProducts(); }
+
 function addToCart(id){
   const prod = productsData.find(p=>p.id===id);
   const existing = cart.find(c=>c.id===id);
@@ -292,13 +325,16 @@ function addToCart(id){
   alert(prod.name+" ditambahkan ke keranjang!");
 }
 
-document.getElementById("search").addEventListener("input",e=>{ searchQuery=e.target.value; currentPage=1; renderProducts(); });
-document.getElementById("sort").addEventListener("change",e=>{ sortOption=e.target.value; renderProducts(); });
+document.getElementById("search").addEventListener("input",e=>{
+  searchQuery=e.target.value; renderProducts();
+});
+document.getElementById("sort").addEventListener("change",e=>{
+  sortOption=e.target.value; renderProducts();
+});
 
 renderCategories(); renderProducts();
 </script>
 </body>
 </html>
-
 
 
