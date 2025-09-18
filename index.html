@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>grosirbaleendah.com</title>
   <style>
     body {
@@ -54,9 +53,9 @@
     #products {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      padding: 35px;
-      max-height: 100vh;   /* batas tinggi */
+      gap: 30px;
+      padding: 30px;
+      max-height: 80vh;   /* batas tinggi */
       overflow: auto;     /* bisa scroll ke segala arah */
     }
 
@@ -93,7 +92,7 @@
       background: #2c3e50;
       color: white;
       cursor: pointer;
-      font-size: 25px;
+      font-size: 18px;
     }
     .product button:hover { background: #1a252f; }
 
@@ -130,11 +129,13 @@
 <div id="controls">
   <input type="text" id="search" placeholder="Cari produk...">
   <select id="sort">
+    <option value="">Urutkan</option>
     <option value="asc">Harga Termurah</option>
     <option value="desc">Harga Termahal</option>
     <option value="new">Terbaru</option>
   </select>
 </div>
+
 
 <div id="products"></div>
 
@@ -336,6 +337,7 @@ renderCategories(); renderProducts();
 </script>
 </body>
 </html>
+
 
 
 
