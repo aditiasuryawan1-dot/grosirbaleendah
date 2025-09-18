@@ -53,7 +53,7 @@
     /* Produk grid dengan scroll 2 arah */
     #products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 15px;
       padding: 35px;
       max-height: 100vh;   /* batas tinggi */
@@ -131,9 +131,14 @@
   <input type="text" id="search" placeholder="Cari produk...">
   <select id="sort">
     <option value="">Urutkan</option>
-    <option value="asc">Harga Termurah</option>
-    <option value="desc">Harga Termahal</option>
-    <option value="new">Produk Terbaru</option>
+    <option value="asc">Sembako</option>
+    <option value="new">Bumbu</option>
+    <option value="desc">Makanan Instan</option>
+    <option value="new">Minuman</option>
+    <option value="new">Kopi</option>
+    <option value="new">Snack</option>
+    <option value="new">Roko</option>
+    <option value="new">Alat&Bahan Kebersihan</option>
   </select>
 </div>
 
@@ -337,6 +342,7 @@ renderCategories(); renderProducts();
 </script>
 </body>
 </html>
+
 
 
 
