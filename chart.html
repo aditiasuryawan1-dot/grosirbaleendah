@@ -17,53 +17,96 @@
       text-align: center;
       padding: 15px;
     }
-    header h1 { margin: 0; font-size: 50px; }
+    header h1 { margin: 0; font-size: 36px; }
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 20px auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    
-    h2 { margin-top: 0; text-align: center; font-size: 40px; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
+    h2 { margin-top: 0; text-align: center; font-size: 28px; }
+
+    /* Produk Card */
+    .cart-item {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+      gap: 15px;
     }
-    table th, table td {
-      border: 1px solid #ccc;
-      padding: 8px;
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #f2f2f2;
+    }
+    .item-details {
+      flex: 1;
+    }
+    .item-details h3 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+    .item-details .price {
+      color: #df0901;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .item-actions {
       text-align: center;
-      font-size: 28px;
-      font-family: Georgia, 'Times New Roman', Times, serif;
     }
-    table th { background: #eee; }
-    .actions button {
-      margin: 2px;
-      padding: 5px 10px;
+    .item-actions input {
+      width: 50px;
+      text-align: center;
+      font-size: 16px;
+      margin: 0 5px;
+    }
+    .item-actions button {
+      padding: 4px 10px;
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 22px;
+      font-size: 16px;
     }
     .btn-plus { background: #2c3e50; color: white; }
     .btn-minus { background: #df0901; color: white; }
-    .btn-remove { background: #888; color: white; }
+    .btn-remove { background: #888; color: white; margin-top: 6px; display: block; }
+
+    /* Ringkasan */
+    .summary {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 2px solid #eee;
+      font-size: 18px;
+    }
+    .summary div {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+    .summary .total {
+      font-size: 20px;
+      font-weight: bold;
+      color: #df0901;
+    }
+
+    /* Checkout */
     .checkout {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 15px;
+      margin-top: 20px;
     }
-    .checkout label { font-weight: bold; margin-top: 8px; font-size: 22px; }
+    .checkout label { font-weight: bold; margin-top: 8px; font-size: 16px; }
     .checkout select, .checkout input, .checkout textarea {
       padding: 8px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 20px;
+      font-size: 16px;
       width: 100%;
     }
     .checkout a, .checkout button {
@@ -76,7 +119,7 @@
       text-decoration: none;
       font-weight: bold;
       cursor: pointer;
-      font-size: 26px;
+      font-size: 18px;
     }
     .checkout a:hover, .checkout button:hover { background: #b30700; }
     .rekening {
@@ -84,11 +127,8 @@
       padding: 10px;
       margin-top: 15px;
       border-radius: 6px;
-      font-size: 22px;
-    }
-    .summary-row td {
-      text-align: right;
-      font-weight: bold;
+      font-size: 16px;
+      display: none;
     }
   </style>
 </head>
@@ -99,18 +139,9 @@
 
   <div class="container">
     <h2>Daftar Belanja Anda</h2>
-    <table id="cartTable">
-      <thead>
-        <tr>
-          <th>Produk</th>
-          <th>Harga</th>
-          <th>Qty</th>
-          <th>Subtotal</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="cartList"></div>
+
+    <div class="summary" id="summaryBox"></div>
 
     <div class="checkout">
       <label for="nama">Nama Lengkap:</label>
@@ -133,13 +164,13 @@
       </select>
 
       <label for="payment">Metode Pembayaran:</label>
-      <select id="payment">
+      <select id="payment" onchange="toggleRekening()">
         <option value="">-- Pilih Metode Pembayaran --</option>
         <option value="COD">COD (Bayar di Tempat)</option>
         <option value="Transfer">Transfer Bank</option>
       </select>
 
-      <div class="rekening">
+      <div class="rekening" id="rekeningBox">
         <b>Rekening Pembayaran:</b><br>
         Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
         BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
@@ -163,29 +194,32 @@
   };
 
   function renderCart(){
-    const tbody = document.querySelector("#cartTable tbody");
-    tbody.innerHTML = "";
+    const cartList = document.getElementById("cartList");
+    const summaryBox = document.getElementById("summaryBox");
+    cartList.innerHTML = "";
+    summaryBox.innerHTML = "";
+
     let subtotal = 0;
 
     cart.forEach((item, index) => {
       const itemSubtotal = item.price * item.qty;
       subtotal += itemSubtotal;
 
-      tbody.innerHTML += `
-        <tr>
-          <td>${item.name}</td>
-          <td>Rp ${item.price.toLocaleString()}</td>
-          <td>
-            <input type="number" min="1" max="${item.stock}" value="${item.qty}" 
-              onchange="updateQty(${index}, this.value)" style="width:70px; font-size:20px; text-align:center;">
-          </td>
-          <td>Rp ${itemSubtotal.toLocaleString()}</td>
-          <td class="actions">
-            <button class="btn-plus" onclick="plusItem(${index})">+</button>
+      cartList.innerHTML += `
+        <div class="cart-item">
+          <img src="${item.image || 'https://via.placeholder.com/90'}" alt="${item.name}">
+          <div class="item-details">
+            <h3>${item.name}</h3>
+            <div class="price">Rp ${item.price.toLocaleString()}</div>
+            <div>Subtotal: Rp ${itemSubtotal.toLocaleString()}</div>
+          </div>
+          <div class="item-actions">
             <button class="btn-minus" onclick="minusItem(${index})">-</button>
+            <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
+            <button class="btn-plus" onclick="plusItem(${index})">+</button>
             <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
-          </td>
-        </tr>
+          </div>
+        </div>
       `;
     });
 
@@ -193,11 +227,10 @@
     const ongkir = shippingRates[kecamatan] || 0;
     const total = subtotal + ongkir;
 
-    // Ringkasan subtotal, ongkir, total
-    tbody.innerHTML += `
-      <tr class="summary-row"><td colspan="3">Subtotal</td><td colspan="2">Rp ${subtotal.toLocaleString()}</td></tr>
-      <tr class="summary-row"><td colspan="3">Ongkir ${kecamatan || '-'}</td><td colspan="2">Rp ${ongkir.toLocaleString()}</td></tr>
-      <tr class="summary-row"><td colspan="3">Total Belanja</td><td colspan="2"><b>Rp ${total.toLocaleString()}</b></td></tr>
+    summaryBox.innerHTML = `
+      <div><span>Subtotal</span><span>Rp ${subtotal.toLocaleString()}</span></div>
+      <div><span>Ongkir ${kecamatan || '-'}</span><span>Rp ${ongkir.toLocaleString()}</span></div>
+      <div class="total"><span>Total</span><span>Rp ${total.toLocaleString()}</span></div>
     `;
   }
 
@@ -239,6 +272,12 @@
     renderCart();
   }
 
+  function toggleRekening(){
+    const payment = document.getElementById("payment").value;
+    const rekeningBox = document.getElementById("rekeningBox");
+    rekeningBox.style.display = payment === "Transfer" ? "block" : "none";
+  }
+
   function checkout(){
     if(cart.length === 0){
       alert("Keranjang masih kosong!");
@@ -270,15 +309,17 @@
     message += `%0AMetode Pembayaran: ${payment}`;
     message += `%0A%0A📌 Data Pemesan:%0ANama: ${nama}%0AAlamat: ${alamat}%0ANo HP: ${nohp}`;
 
+    if(payment === "Transfer"){
+      message += `%0A%0A💳 Mohon lakukan transfer ke rekening yang tertera di website dan lampirkan bukti transfer.`;
+    }
+
     window.open(`https://wa.me/628997944479?text=${message}`, "_blank");
   }
 
   renderCart();
-</script>
-
+  </script>
 </body>
 </html>
-
 
 
 
