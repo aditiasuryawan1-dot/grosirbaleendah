@@ -208,7 +208,7 @@
 
       cartList.innerHTML += `
         <div class="cart-item">
-          <img src="${item.image ? item.image : 'image/no-image.png'}" alt="${item.name}">
+          <img src="${item.image}" alt="${item.name}">
           <div class="item-details">
             <h3>${item.name}</h3>
             <div class="price">Rp ${item.price.toLocaleString()}</div>
@@ -321,6 +321,7 @@
   </script>
 </body>
 </html>
+
 
 
 
