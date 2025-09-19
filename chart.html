@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keranjang Belanja - Grosir Baleendah</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -92,7 +92,7 @@
       margin-top: 10px;
       font-size: 14px;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 8px;
       margin-top: 4px;
@@ -138,7 +138,7 @@
       <input type="text" id="nama" required>
 
       <label>Alamat</label>
-      <input type="text" id="alamat" required>
+      <textarea id="alamat" required></textarea>
 
       <label>No HP</label>
       <input type="text" id="hp" required>
@@ -188,16 +188,16 @@
       cartList.innerHTML = "";
       let total = 0;
       cart.forEach((item, index) => {
-        const subtotal = item.harga * item.qty;
+        const subtotal = item.price * item.qty;
         total += subtotal;
 
         const div = document.createElement("div");
         div.className = "cart-item";
         div.innerHTML = `
-          <img src="${item.gambar}" alt="${item.nama}">
+          <img src="${item.img}" alt="${item.name}">
           <div class="item-info">
-            <h3>${item.nama}</h3>
-            <p>Harga: Rp ${item.harga.toLocaleString()}</p>
+            <h3>${item.name}</h3>
+            <p>Harga: Rp ${item.price.toLocaleString()}</p>
             <p>Subtotal: Rp ${(subtotal).toLocaleString()}</p>
           </div>
           <div class="item-actions">
@@ -233,17 +233,13 @@
 
     // onchange kecamatan
     kecamatanSelect.addEventListener("change", () => {
-      let total = cart.reduce((sum, item) => sum + item.harga * item.qty, 0);
+      let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
       updateTotal(total);
     });
 
     // onchange pembayaran
     document.getElementById("pembayaran").addEventListener("change", function() {
-      if (this.value === "Transfer") {
-        rekeningInfo.style.display = "block";
-      } else {
-        rekeningInfo.style.display = "none";
-      }
+      rekeningInfo.style.display = (this.value === "Transfer") ? "block" : "none";
     });
 
     // Checkout form
@@ -255,19 +251,23 @@
       let kecamatan = kecamatanSelect.value;
       let pembayaran = document.getElementById("pembayaran").value;
 
-      let total = cart.reduce((sum, item) => sum + item.harga * item.qty, 0);
+      let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
       let ongkir = kecamatan ? (ongkirMap[kecamatan] || 0) : 0;
       let grandTotal = total + ongkir;
 
       let pesan = `Halo, saya ingin pesan:%0A`;
       cart.forEach(item => {
-        pesan += `- ${item.nama} x${item.qty} = Rp ${(item.harga*item.qty).toLocaleString()}%0A`;
+        pesan += `- ${item.name} x${item.qty} = Rp ${(item.price*item.qty).toLocaleString()}%0A`;
       });
       pesan += `Total: Rp ${total.toLocaleString()}%0A`;
       pesan += `Ongkir (${kecamatan}): Rp ${ongkir.toLocaleString()}%0A`;
       pesan += `Total Bayar: Rp ${grandTotal.toLocaleString()}%0A%0A`;
       pesan += `Nama: ${nama}%0AAlamat: ${alamat}%0AHP: ${hp}%0A`;
       pesan += `Pembayaran: ${pembayaran}`;
+
+      if (pembayaran === "Transfer") {
+        pesan += `%0ARekening tujuan: BCA 3371777626 / Mandiri 130006`;
+      }
 
       window.open(`https://wa.me/628997944479?text=${pesan}`, "_blank");
     });
