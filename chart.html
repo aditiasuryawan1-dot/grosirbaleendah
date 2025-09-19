@@ -1,4 +1,4 @@
-akhi tolong untuk no rekening banknya hanya tampil saat dipilih transfer saja ya dari coding ini <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -133,18 +133,18 @@ akhi tolong untuk no rekening banknya hanya tampil saat dipilih transfer saja ya
       </select>
 
       <label for="payment">Metode Pembayaran:</label>
-      <select id="payment">
-        <option value="">-- Pilih Metode Pembayaran --</option>
-        <option value="COD">COD (Bayar di Tempat)</option>
-        <option value="Transfer">Transfer Bank</option>
-      </select>
+<select id="payment" onchange="toggleRekening()">
+  <option value="">-- Pilih Metode Pembayaran --</option>
+  <option value="COD">COD (Bayar di Tempat)</option>
+  <option value="Transfer">Transfer Bank</option>
+</select>
 
-      <div class="rekening">
-        <b>Rekening Pembayaran:</b><br>
-        Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
-        BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
-        <u>Mohon lampirkan bukti transfer di WhatsApp</u>
-      </div>
+<div class="rekening" id="rekeningBox" style="display: none;">
+  <b>Rekening Pembayaran:</b><br>
+  Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
+  BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
+  <u>Mohon lampirkan bukti transfer di WhatsApp</u>
+</div>
 
       <a href="index.html">← Kembali Belanja</a>
       <button onclick="checkout()">Checkout via WhatsApp</button>
@@ -255,6 +255,15 @@ akhi tolong untuk no rekening banknya hanya tampil saat dipilih transfer saja ya
       return;
     }
 
+ function toggleRekening(){
+  const payment = document.getElementById("payment").value;
+  const rekeningBox = document.getElementById("rekeningBox");
+  if(payment === "Transfer"){
+    rekeningBox.style.display = "block";
+  } else {
+    rekeningBox.style.display = "none";
+  }
+}
     let message = `Assalamu'alaikum, saya ingin pesan:%0A`;
     cart.forEach(item => {
       message += `- ${item.name} (${item.qty} x Rp${item.price.toLocaleString()})%0A`;
@@ -281,5 +290,300 @@ akhi tolong untuk no rekening banknya hanya tampil saat dipilih transfer saja ya
 
 
 
+
+
+akhi ubah bagian table, jadi versi seperti tokopedia agar tidak kaku dari coding cart ini <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Keranjang Belanja - Grosir Baleendah</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      background: #0a1327;
+      color: white;
+      text-align: center;
+      padding: 15px;
+    }
+    header h1 { margin: 0; font-size: 50px; }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    h2 { margin-top: 0; text-align: center; font-size: 40px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      font-size: 28px;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+    table th { background: #eee; }
+    .actions button {
+      margin: 2px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 22px;
+    }
+    .btn-plus { background: #2c3e50; color: white; }
+    .btn-minus { background: #df0901; color: white; }
+    .btn-remove { background: #888; color: white; }
+    .checkout {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .checkout label { font-weight: bold; margin-top: 8px; font-size: 22px; }
+    .checkout select, .checkout input, .checkout textarea {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 20px;
+      width: 100%;
+    }
+    .checkout a, .checkout button {
+      text-align: center;
+      padding: 12px;
+      background: #df0901;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 26px;
+    }
+    .checkout a:hover, .checkout button:hover { background: #b30700; }
+    .rekening {
+      background: #f9f9f9;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 6px;
+      font-size: 22px;
+      display: none; /* default disembunyikan */
+    }
+    .summary-row td {
+      text-align: right;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Keranjang Belanja</h1>
+  </header>
+
+  <div class="container">
+    <h2>Daftar Belanja Anda</h2>
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Harga</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="checkout">
+      <label for="nama">Nama Lengkap:</label>
+      <input type="text" id="nama" placeholder="Masukkan nama anda">
+
+      <label for="alamat">Alamat Lengkap:</label>
+      <textarea id="alamat" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+
+      <label for="nohp">No HP / WhatsApp:</label>
+      <input type="text" id="nohp" placeholder="08xxxxxxxxxx">
+
+      <label for="kecamatan">Pilih Kecamatan:</label>
+      <select id="kecamatan" onchange="renderCart()">
+        <option value="">-- Pilih Kecamatan --</option>
+        <option value="Baleendah">Baleendah - Rp 10.000</option>
+        <option value="Pameungpeuk">Pameungpeuk - Rp 15.000</option>
+        <option value="Dayeuhkolot">Dayeuhkolot - Rp 15.000</option>
+        <option value="Bojongsoang">Bojongsoang - Rp 20.000</option>
+        <option value="Banjaran">Banjaran - Rp 20.000</option>
+      </select>
+
+      <label for="payment">Metode Pembayaran:</label>
+      <select id="payment" onchange="toggleRekening()">
+        <option value="">-- Pilih Metode Pembayaran --</option>
+        <option value="COD">COD (Bayar di Tempat)</option>
+        <option value="Transfer">Transfer Bank</option>
+      </select>
+
+      <div class="rekening" id="rekeningBox">
+        <b>Rekening Pembayaran:</b><br>
+        Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
+        BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
+        <u>Mohon lampirkan bukti transfer di WhatsApp</u>
+      </div>
+
+      <a href="index.html">← Kembali Belanja</a>
+      <button onclick="checkout()">Checkout via WhatsApp</button>
+    </div>
+  </div>
+
+  <script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const shippingRates = {
+    "Baleendah": 10000,
+    "Pameungpeuk": 15000,
+    "Dayeuhkolot": 15000,
+    "Bojongsoang": 20000,
+    "Banjaran": 20000
+  };
+
+  function renderCart(){
+    const tbody = document.querySelector("#cartTable tbody");
+    tbody.innerHTML = "";
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+      const itemSubtotal = item.price * item.qty;
+      subtotal += itemSubtotal;
+
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>Rp ${item.price.toLocaleString()}</td>
+          <td>
+            <input type="number" min="1" max="${item.stock}" value="${item.qty}" 
+              onchange="updateQty(${index}, this.value)" style="width:70px; font-size:20px; text-align:center;">
+          </td>
+          <td>Rp ${itemSubtotal.toLocaleString()}</td>
+          <td class="actions">
+            <button class="btn-plus" onclick="plusItem(${index})">+</button>
+            <button class="btn-minus" onclick="minusItem(${index})">-</button>
+            <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    const kecamatan = document.getElementById("kecamatan").value;
+    const ongkir = shippingRates[kecamatan] || 0;
+    const total = subtotal + ongkir;
+
+    tbody.innerHTML += `
+      <tr class="summary-row"><td colspan="3">Subtotal</td><td colspan="2">Rp ${subtotal.toLocaleString()}</td></tr>
+      <tr class="summary-row"><td colspan="3">Ongkir ${kecamatan || '-'}</td><td colspan="2">Rp ${ongkir.toLocaleString()}</td></tr>
+      <tr class="summary-row"><td colspan="3">Total Belanja</td><td colspan="2"><b>Rp ${total.toLocaleString()}</b></td></tr>
+    `;
+  }
+
+  function updateQty(index, value){
+    let qty = parseInt(value);
+    if(isNaN(qty) || qty < 1) qty = 1;
+    if(qty > cart[index].stock) {
+      alert("Stok tidak mencukupi! Maksimal: " + cart[index].stock);
+      qty = cart[index].stock;
+    }
+    cart[index].qty = qty;
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function plusItem(index){
+    if(cart[index].qty < cart[index].stock){
+      cart[index].qty++;
+    } else {
+      alert("Stok habis untuk produk: " + cart[index].name);
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function minusItem(index){
+    if(cart[index].qty > 1){
+      cart[index].qty--;
+    } else {
+      cart.splice(index, 1);
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function removeItem(index){
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function toggleRekening(){
+    const payment = document.getElementById("payment").value;
+    const rekeningBox = document.getElementById("rekeningBox");
+    if(payment === "Transfer"){
+      rekeningBox.style.display = "block";
+    } else {
+      rekeningBox.style.display = "none";
+    }
+  }
+
+  function checkout(){
+    if(cart.length === 0){
+      alert("Keranjang masih kosong!");
+      return;
+    }
+    const nama = document.getElementById("nama").value.trim();
+    const alamat = document.getElementById("alamat").value.trim();
+    const nohp = document.getElementById("nohp").value.trim();
+    const kecamatan = document.getElementById("kecamatan").value;
+    const payment = document.getElementById("payment").value;
+
+    if(!nama || !alamat || !nohp || !kecamatan || !payment){
+      alert("Lengkapi semua data pesanan terlebih dahulu!");
+      return;
+    }
+
+    let message = `Assalamu'alaikum, saya ingin pesan:%0A`;
+    cart.forEach(item => {
+      message += `- ${item.name} (${item.qty} x Rp${item.price.toLocaleString()})%0A`;
+    });
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const ongkir = shippingRates[kecamatan] || 0;
+    const total = subtotal + ongkir;
+
+    message += `%0ASubtotal: Rp ${subtotal.toLocaleString()}`;
+    message += `%0AOngkir (${kecamatan}): Rp ${ongkir.toLocaleString()}`;
+    message += `%0ATotal Belanja: Rp ${total.toLocaleString()}`;
+    message += `%0AMetode Pembayaran: ${payment}`;
+    message += `%0A%0A📌 Data Pemesan:%0ANama: ${nama}%0AAlamat: ${alamat}%0ANo HP: ${nohp}`;
+
+    if(payment === "Transfer"){
+      message += `%0A%0A💳 Mohon lakukan transfer ke rekening yang tertera di website dan lampirkan bukti transfer.`;
+    }
+
+    window.open(`https://wa.me/628997944479?text=${message}`, "_blank");
+  }
+
+  renderCart();
+  </script>
+</body>
+</html>
 
 
