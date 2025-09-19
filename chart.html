@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+akhi tolong untuk no rekening banknya hanya tampil saat dipilih transfer saja ya dari coding ini <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -17,110 +17,53 @@
       text-align: center;
       padding: 15px;
     }
-    header h1 { margin: 0; font-size: 40px; }
-
+    header h1 { margin: 0; font-size: 50px; }
     .container {
-      max-width: 900px;
+      max-width: 800px;
       margin: 20px auto;
       background: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-    h2 { margin-top: 0; text-align: center; font-size: 30px; }
-
-    /* CART LIST ala Tokopedia */
-    .cart-item {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-      padding: 15px 0;
-      gap: 15px;
+    
+    h2 { margin-top: 0; text-align: center; font-size: 40px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
     }
-    .cart-item img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 8px;
+    table th, table td {
       border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      font-size: 28px;
+      font-family: Georgia, 'Times New Roman', Times, serif;
     }
-    .cart-info {
-      flex: 1;
-    }
-    .cart-info h3 {
-      margin: 0;
-      font-size: 22px;
-    }
-    .cart-info p {
-      margin: 3px 0;
-      font-size: 18px;
-      color: #666;
-    }
-    .qty-control {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 8px;
-    }
-    .qty-control button {
+    table th { background: #eee; }
+    .actions button {
+      margin: 2px;
       padding: 5px 10px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 18px;
-      font-weight: bold;
-      background: #eee;
-    }
-    .qty-control input {
-      width: 50px;
-      text-align: center;
-      font-size: 18px;
-      padding: 3px;
-    }
-    .cart-subtotal {
-      font-weight: bold;
-      font-size: 18px;
-      margin-left: 10px;
-    }
-    .btn-remove {
-      background: #df0901;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-left: 10px;
-    }
-
-    /* summary */
-    .summary {
-      text-align: right;
-      margin-top: 15px;
-      font-size: 20px;
-    }
-    .summary p {
-      margin: 5px 0;
-    }
-    .summary b {
       font-size: 22px;
-      color: #0a1327;
     }
-
-    /* checkout form */
+    .btn-plus { background: #2c3e50; color: white; }
+    .btn-minus { background: #df0901; color: white; }
+    .btn-remove { background: #888; color: white; }
     .checkout {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 25px;
+      margin-top: 15px;
     }
-    .checkout label { font-weight: bold; margin-top: 8px; font-size: 18px; }
+    .checkout label { font-weight: bold; margin-top: 8px; font-size: 22px; }
     .checkout select, .checkout input, .checkout textarea {
       padding: 8px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 18px;
+      font-size: 20px;
       width: 100%;
     }
     .checkout a, .checkout button {
@@ -133,17 +76,19 @@
       text-decoration: none;
       font-weight: bold;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 26px;
     }
     .checkout a:hover, .checkout button:hover { background: #b30700; }
-
     .rekening {
       background: #f9f9f9;
       padding: 10px;
       margin-top: 15px;
       border-radius: 6px;
-      font-size: 18px;
-      display: none;
+      font-size: 22px;
+    }
+    .summary-row td {
+      text-align: right;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -154,8 +99,18 @@
 
   <div class="container">
     <h2>Daftar Belanja Anda</h2>
-    <div id="cartList"></div>
-    <div class="summary" id="summaryBox"></div>
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Harga</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
     <div class="checkout">
       <label for="nama">Nama Lengkap:</label>
@@ -178,13 +133,13 @@
       </select>
 
       <label for="payment">Metode Pembayaran:</label>
-      <select id="payment" onchange="toggleRekening()">
+      <select id="payment">
         <option value="">-- Pilih Metode Pembayaran --</option>
         <option value="COD">COD (Bayar di Tempat)</option>
         <option value="Transfer">Transfer Bank</option>
       </select>
 
-      <div class="rekening" id="rekeningBox">
+      <div class="rekening">
         <b>Rekening Pembayaran:</b><br>
         Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
         BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
@@ -208,30 +163,29 @@
   };
 
   function renderCart(){
-    const cartList = document.getElementById("cartList");
-    const summaryBox = document.getElementById("summaryBox");
-    cartList.innerHTML = "";
+    const tbody = document.querySelector("#cartTable tbody");
+    tbody.innerHTML = "";
     let subtotal = 0;
 
     cart.forEach((item, index) => {
       const itemSubtotal = item.price * item.qty;
       subtotal += itemSubtotal;
 
-      cartList.innerHTML += `
-        <div class="cart-item">
-          <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.name}">
-          <div class="cart-info">
-            <h3>${item.name}</h3>
-            <p>Rp ${item.price.toLocaleString()}</p>
-            <div class="qty-control">
-              <button onclick="minusItem(${index})">-</button>
-              <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
-              <button onclick="plusItem(${index})">+</button>
-              <span class="cart-subtotal">Rp ${itemSubtotal.toLocaleString()}</span>
-              <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
-            </div>
-          </div>
-        </div>
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>Rp ${item.price.toLocaleString()}</td>
+          <td>
+            <input type="number" min="1" max="${item.stock}" value="${item.qty}" 
+              onchange="updateQty(${index}, this.value)" style="width:70px; font-size:20px; text-align:center;">
+          </td>
+          <td>Rp ${itemSubtotal.toLocaleString()}</td>
+          <td class="actions">
+            <button class="btn-plus" onclick="plusItem(${index})">+</button>
+            <button class="btn-minus" onclick="minusItem(${index})">-</button>
+            <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
+          </td>
+        </tr>
       `;
     });
 
@@ -239,17 +193,21 @@
     const ongkir = shippingRates[kecamatan] || 0;
     const total = subtotal + ongkir;
 
-    summaryBox.innerHTML = `
-      <p>Subtotal: Rp ${subtotal.toLocaleString()}</p>
-      <p>Ongkir (${kecamatan || '-'}) : Rp ${ongkir.toLocaleString()}</p>
-      <p><b>Total: Rp ${total.toLocaleString()}</b></p>
+    // Ringkasan subtotal, ongkir, total
+    tbody.innerHTML += `
+      <tr class="summary-row"><td colspan="3">Subtotal</td><td colspan="2">Rp ${subtotal.toLocaleString()}</td></tr>
+      <tr class="summary-row"><td colspan="3">Ongkir ${kecamatan || '-'}</td><td colspan="2">Rp ${ongkir.toLocaleString()}</td></tr>
+      <tr class="summary-row"><td colspan="3">Total Belanja</td><td colspan="2"><b>Rp ${total.toLocaleString()}</b></td></tr>
     `;
   }
 
   function updateQty(index, value){
     let qty = parseInt(value);
     if(isNaN(qty) || qty < 1) qty = 1;
-    if(qty > cart[index].stock) qty = cart[index].stock;
+    if(qty > cart[index].stock) {
+      alert("Stok tidak mencukupi! Maksimal: " + cart[index].stock);
+      qty = cart[index].stock;
+    }
     cart[index].qty = qty;
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
@@ -258,6 +216,8 @@
   function plusItem(index){
     if(cart[index].qty < cart[index].stock){
       cart[index].qty++;
+    } else {
+      alert("Stok habis untuk produk: " + cart[index].name);
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
@@ -277,11 +237,6 @@
     cart.splice(index, 1);
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
-  }
-
-  function toggleRekening(){
-    const payment = document.getElementById("payment").value;
-    document.getElementById("rekeningBox").style.display = (payment === "Transfer") ? "block" : "none";
   }
 
   function checkout(){
@@ -315,18 +270,14 @@
     message += `%0AMetode Pembayaran: ${payment}`;
     message += `%0A%0A📌 Data Pemesan:%0ANama: ${nama}%0AAlamat: ${alamat}%0ANo HP: ${nohp}`;
 
-    if(payment === "Transfer"){
-      message += `%0A%0A💳 Mohon lakukan transfer ke rekening yang tertera di website dan lampirkan bukti transfer.`;
-    }
-
     window.open(`https://wa.me/628997944479?text=${message}`, "_blank");
   }
 
   renderCart();
-  </script>
+</script>
+
 </body>
 </html>
-
 
 
 
