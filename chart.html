@@ -8,28 +8,29 @@
     body {font-family: Arial, sans-serif; margin:0; padding:10px; background:#f5f5f5;}
     h1 {text-align:center; color:#df0901; font-size:22px; margin-bottom:15px;}
 
-    /* Card produk */
     .cart-item {
-      display:flex; align-items:center; justify-content:space-between;
-      background:#fff; padding:10px; margin-bottom:10px;
-      border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
+      display:flex; align-items:center; gap:10px;
+      border:1px solid #ddd; border-radius:8px;
+      padding:10px; margin-bottom:10px;
+      background:#fff;
     }
-    .cart-item img {width:70px; height:70px; object-fit:cover; border-radius:6px; margin-right:10px;}
+    .cart-item img {width:70px; height:70px; object-fit:cover; border-radius:6px;}
     .item-info {flex:1;}
     .item-info h3 {margin:0; font-size:15px;}
-    .item-info p {margin:3px 0; font-size:13px; color:#555;}
+    .item-info p {margin:4px 0; font-size:13px;}
     .item-actions {text-align:right;}
     .item-actions input {
-      width:50px; padding:5px; text-align:center; border:1px solid #ccc; border-radius:4px;
+      width:50px; padding:5px;
+      border:1px solid #ccc; border-radius:4px;
     }
     .hapus-btn {
-      display:block; margin-top:5px;
       background:#dc3545; color:#fff; border:none;
-      padding:5px 8px; border-radius:4px; cursor:pointer; font-size:12px;
+      padding:6px 10px; border-radius:4px; cursor:pointer;
+      font-size:13px; margin-top:5px;
     }
     .hapus-btn:hover {background:#b02a37;}
 
-    .total-box {text-align:right; font-size:16px; margin:10px 0; font-weight:bold;}
+    .total-box {font-size:15px; margin:8px 0; font-weight:bold;}
 
     form {background:#fff; padding:15px; border-radius:8px; margin-top:15px;}
     form h2 {font-size:18px; margin-top:0;}
@@ -47,48 +48,28 @@
     .checkout-btn:hover {background:#218838;}
 
     .back-btn {
-      display:inline-block; margin-bottom:15px; padding:10px 15px;
-      background:#007bff; color:#fff; border:none; border-radius:6px;
-      font-size:14px; text-decoration:none;
+      display:inline-block; margin-bottom:15px;
+      padding:10px 15px; background:#007bff; color:#fff;
+      text-decoration:none; border-radius:6px; font-size:14px;
     }
     .back-btn:hover {background:#0056b3;}
+
+    /* ✅ RESPONSIVE HP */
+    @media (max-width:600px) {
+      .cart-item {flex-direction:column; align-items:flex-start;}
+      .item-actions {width:100%; text-align:left;}
+    }
   </style>
 </head>
 <body>
 
+<a href="index.html" class="back-btn">← Kembali Belanja</a>
 <h1>Keranjang Belanja</h1>
-<a href="index.html" class="back-btn">⬅ Kembali Belanja</a>
 
-<div id="cartList">
-  <!-- Contoh item -->
-  <div class="cart-item">
-    <img src="image/sembako/minyak kita 1L.jpg" alt="Minyak Kita">
-    <div class="item-info">
-      <h3>Minyak Kita 1L</h3>
-      <p>Harga: 16.300</p>
-      <p class="subtotal">Subtotal: 32.600</p>
-    </div>
-    <div class="item-actions">
-      <input type="number" value="2" min="1" onchange="updateTotal()">
-      <button class="hapus-btn" onclick="hapusItem(this)">Hapus</button>
-    </div>
-  </div>
-
-  <div class="cart-item">
-    <img src="image/makanan instan/Indomie Goreng.jpg" alt="Indomie Goreng">
-    <div class="item-info">
-      <h3>Indomie Goreng</h3>
-      <p>Harga: 2.900</p>
-      <p class="subtotal">Subtotal: 14.500</p>
-    </div>
-    <div class="item-actions">
-      <input type="number" value="5" min="1" onchange="updateTotal()">
-      <button class="hapus-btn" onclick="hapusItem(this)">Hapus</button>
-    </div>
-  </div>
-</div>
-
-<div class="total-box" id="totalBox">Total: Rp 47.100</div>
+<div id="cartList"></div>
+<div class="total-box" id="totalBox">Total: Rp 0</div>
+<div class="total-box" id="ongkirBox">Ongkir: Rp 0</div>
+<div class="total-box" id="grandTotalBox">Total Bayar: Rp 0</div>
 
 <form id="checkoutForm">
   <h2>Data Pembeli</h2>
@@ -109,9 +90,6 @@
     <option value="Banjaran" data-ongkir="8000">Banjaran - Rp 8.000</option>
   </select>
   
-  <div class="total-box" id="ongkirBox">Ongkir: Rp 0</div>
-  <div class="total-box" id="grandTotalBox">Total Bayar: Rp 47.100</div>
-  
   <label>Metode Pembayaran</label>
   <select id="metode" onchange="toggleRekening()">
     <option value="COD">COD (Bayar di Tempat)</option>
@@ -128,28 +106,56 @@
 </form>
 
 <script>
-function updateTotal(){
-  let items = document.querySelectorAll(".cart-item");
-  let total = 0;
-  items.forEach(item=>{
-    let harga = parseInt(item.querySelector("p").innerText.replace("Harga: ","").replace(".",""));
-    let qty = parseInt(item.querySelector("input").value);
-    let subtotal = harga * qty;
-    item.querySelector(".subtotal").innerText = "Subtotal: " + subtotal.toLocaleString();
-    total += subtotal;
+function loadCart(){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let container = document.getElementById("cartList");
+  container.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    let subtotal = item.price * item.qty;
+    container.innerHTML += `
+      <div class="cart-item">
+        <img src="${item.img}" alt="${item.name}">
+        <div class="item-info">
+          <h3>${item.name}</h3>
+          <p>Harga: Rp ${item.price.toLocaleString()}</p>
+          <p class="subtotal">Subtotal: Rp ${(subtotal).toLocaleString()}</p>
+        </div>
+        <div class="item-actions">
+          <input type="number" value="${item.qty}" min="1" onchange="updateQty(${index}, this.value)">
+          <button class="hapus-btn" onclick="hapusItem(${index})">Hapus</button>
+        </div>
+      </div>
+    `;
   });
 
+  updateTotal();
+}
+
+function updateQty(index, qty){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart[index].qty = parseInt(qty);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+function hapusItem(index){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.splice(index,1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  loadCart();
+}
+
+function updateTotal(){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = cart.reduce((sum, item)=> sum + (item.price * item.qty), 0);
+
   let kecamatanSelect = document.getElementById("kecamatan");
-  let ongkir = parseInt(kecamatanSelect.options[kecamatanSelect.selectedIndex]?.dataset.ongkir || 0);
+  let ongkir = parseInt(kecamatanSelect?.options[kecamatanSelect.selectedIndex]?.dataset.ongkir || 0);
 
   document.getElementById("totalBox").innerText = "Total: Rp " + total.toLocaleString();
   document.getElementById("ongkirBox").innerText = "Ongkir: Rp " + ongkir.toLocaleString();
   document.getElementById("grandTotalBox").innerText = "Total Bayar: Rp " + (total+ongkir).toLocaleString();
-}
-
-function hapusItem(btn){
-  btn.closest(".cart-item").remove();
-  updateTotal();
 }
 
 function toggleRekening(){
@@ -163,18 +169,16 @@ function checkout(){
   let nohp = document.getElementById("nohp").value;
   let kecamatan = document.getElementById("kecamatan").value;
   let metode = document.getElementById("metode").value;
-
-  let items = document.querySelectorAll(".cart-item");
-  if(items.length === 0){
+  
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if(cart.length === 0){
     alert("Keranjang masih kosong!");
     return;
   }
 
   let pesan = "Halo, saya ingin pesan:\n";
-  items.forEach(item=>{
-    let produk = item.querySelector("h3").innerText;
-    let qty = item.querySelector("input").value;
-    pesan += "- " + produk + " x" + qty + "\n";
+  cart.forEach(item=>{
+    pesan += "- " + item.name + " x" + item.qty + "\n";
   });
 
   let total = document.getElementById("grandTotalBox").innerText;
@@ -183,16 +187,16 @@ function checkout(){
   pesan += "\nAlamat: " + alamat + ", " + kecamatan;
   pesan += "\nNo HP: " + nohp;
   pesan += "\nMetode Bayar: " + metode;
-
+  
   if(metode=="Transfer"){
     pesan += "\nRekening tujuan: BCA 3371777626 / Mandiri 1300062044600";
   }
-
+  
   let url = "https://wa.me/628997944479?text=" + encodeURIComponent(pesan);
   window.open(url, "_blank");
 }
 
-updateTotal();
+window.onload = loadCart;
 </script>
 
 </body>
