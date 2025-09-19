@@ -5,109 +5,147 @@
   <title>Keranjang Belanja - Grosir Baleendah</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {font-family: Arial, sans-serif; margin:0; padding:10px; background:#f5f5f5;}
-    h1 {text-align:center; color:#df0901; font-size:22px; margin-bottom:15px;}
+    body {
+      font-family: Arial, sans-serif;
+      margin:0; padding:15px;
+      background:#f5f5f5;
+    }
+    h1 {
+      text-align:center;
+      color:#df0901;
+      font-size:22px;
+      margin-bottom:20px;
+    }
 
-    #cartList {
-    max-width: 600px;
-    margin: 0 auto;
+    .cart-container {
+      max-width:800px;
+      margin:0 auto;
+    }
 
     .cart-item {
-      display:flex; align-items:center; gap:10px;
+      display:flex; align-items:center; gap:12px;
       border:1px solid #ddd; border-radius:8px;
-      padding:10px; margin-bottom:10px;
+      padding:12px; margin-bottom:12px;
       background:#fff;
     }
-    .cart-item img {width:70px; height:70px; object-fit:cover; border-radius:6px;}
+    .cart-item img {
+      width:80px; height:80px;
+      object-fit:cover; border-radius:6px;
+    }
     .item-info {flex:1;}
     .item-info h3 {margin:0; font-size:15px;}
     .item-info p {margin:4px 0; font-size:13px;}
     .item-actions {text-align:right;}
     .item-actions input {
-      width:50px; padding:5px;
+      width:50px; padding:6px;
       border:1px solid #ccc; border-radius:4px;
+      text-align:center;
     }
     .hapus-btn {
       background:#dc3545; color:#fff; border:none;
       padding:6px 10px; border-radius:4px; cursor:pointer;
-      font-size:13px; margin-top:5px;
+      font-size:13px; margin-top:6px;
     }
     .hapus-btn:hover {background:#b02a37;}
 
-    .total-box {font-size:15px; margin:8px 0; font-weight:bold;}
+    .total-box {
+      font-size:15px; margin:6px 0; font-weight:bold;
+      text-align:right;
+    }
 
-    form {background:#fff; padding:15px; border-radius:8px; margin-top:15px;}
-    form h2 {font-size:18px; margin-top:0;}
-    form label {display:block; margin-top:10px; font-weight:bold; font-size:14px;}
+    form {
+      background:#fff; padding:15px;
+      border-radius:8px; margin-top:20px;
+    }
+    form h2 {
+      font-size:18px; margin-top:0; text-align:center;
+    }
+    form label {
+      display:block; margin-top:10px;
+      font-weight:bold; font-size:14px;
+    }
     form input, form select, form textarea {
       width:100%; padding:10px; margin-top:5px;
-      border:1px solid #ccc; border-radius:4px; font-size:14px;
+      border:1px solid #ccc; border-radius:4px;
+      font-size:14px;
     }
-    .rekening {background:#eee; padding:10px; margin:10px 0; border-radius:6px; font-size:14px;}
+
+    .rekening {
+      background:#eee; padding:10px;
+      margin:10px 0; border-radius:6px;
+      font-size:14px;
+    }
+
     .checkout-btn {
-      display:block; width:100%; padding:14px; margin-top:15px;
-      background:#28a745; color:#fff; border:none; border-radius:6px;
+      display:block; width:100%; padding:14px;
+      margin-top:15px;
+      background:#28a745; color:#fff;
+      border:none; border-radius:6px;
       font-size:16px; cursor:pointer;
     }
     .checkout-btn:hover {background:#218838;}
 
     .back-btn {
       display:inline-block; margin-bottom:15px;
-      padding:10px 15px; background:#007bff; color:#fff;
-      text-decoration:none; border-radius:6px; font-size:14px;
+      padding:10px 15px; background:#007bff;
+      color:#fff; text-decoration:none;
+      border-radius:6px; font-size:14px;
     }
     .back-btn:hover {background:#0056b3;}
 
-    /* ✅ RESPONSIVE HP */
+    /* ✅ Responsive */
     @media (max-width:600px) {
       .cart-item {flex-direction:column; align-items:flex-start;}
       .item-actions {width:100%; text-align:left;}
+      .total-box {text-align:left;}
     }
   </style>
 </head>
 <body>
 
-<a href="index.html" class="back-btn">← Kembali Belanja</a>
-<h1>Keranjang Belanja</h1>
+<div class="cart-container">
+  <a href="index.html" class="back-btn">← Kembali Belanja</a>
+  <h1>Keranjang Belanja</h1>
 
-<div id="cartList"></div>
-<div class="total-box" id="totalBox">Total: Rp 0</div>
-<div class="total-box" id="ongkirBox">Ongkir: Rp 0</div>
-<div class="total-box" id="grandTotalBox">Total Bayar: Rp 0</div>
+  <div id="cartList"></div>
+  <div class="total-box" id="totalBox">Total: Rp 0</div>
+  <div class="total-box" id="ongkirBox">Ongkir: Rp 0</div>
+  <div class="total-box" id="grandTotalBox">Total Bayar: Rp 0</div>
 
-<form id="checkoutForm">
-  <h2>Data Pembeli</h2>
-  <label>Nama Lengkap</label>
-  <input type="text" id="nama" required>
-  
-  <label>Alamat Lengkap</label>
-  <textarea id="alamat" required></textarea>
-  
-  <label>No HP</label>
-  <input type="text" id="nohp" required>
-  
-  <label>Kecamatan</label>
-  <select id="kecamatan" onchange="updateTotal()">
-    <option value="" data-ongkir="0">-- Pilih Kecamatan --</option>
-    <option value="Baleendah" data-ongkir="5000">Baleendah - Rp 5.000</option>
-    <option value="Dayeuhkolot" data-ongkir="7000">Dayeuhkolot - Rp 7.000</option>
-    <option value="Banjaran" data-ongkir="8000">Banjaran - Rp 8.000</option>
-  </select>
-  
-  <label>Metode Pembayaran</label>
-  <select id="metode" onchange="toggleRekening()">
-    <option value="COD">COD (Bayar di Tempat)</option>
-    <option value="Transfer">Transfer</option>
-  </select>
-  
-  <div class="rekening" id="rekeningBox" style="display:none;">
-    Silakan transfer ke salah satu rekening:<br>
-    <b>BCA: 3371777626</b><br>
-    <b>Mandiri: 1300062044600</b>
-  </div>
-  
-  <button type="button" class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
-</form>
+  <form id="checkoutForm">
+    <h2>Data Pembeli</h2>
+    <label>Nama Lengkap</label>
+    <input type="text" id="nama" required>
+    
+    <label>Alamat Lengkap</label>
+    <textarea id="alamat" required></textarea>
+    
+    <label>No HP</label>
+    <input type="text" id="nohp" required>
+    
+    <label>Kecamatan</label>
+    <select id="kecamatan" onchange="updateTotal()" required>
+      <option value="" data-ongkir="0">-- Pilih Kecamatan --</option>
+      <option value="Baleendah" data-ongkir="5000">Baleendah - Rp 5.000</option>
+      <option value="Dayeuhkolot" data-ongkir="7000">Dayeuhkolot - Rp 7.000</option>
+      <option value="Banjaran" data-ongkir="8000">Banjaran - Rp 8.000</option>
+    </select>
+    
+    <label>Metode Pembayaran</label>
+    <select id="metode" onchange="toggleRekening()">
+      <option value="COD">COD (Bayar di Tempat)</option>
+      <option value="Transfer">Transfer</option>
+    </select>
+    
+    <div class="rekening" id="rekeningBox" style="display:none;">
+      Silakan transfer ke salah satu rekening:<br>
+      <b>BCA: 3371777626</b><br>
+      <b>Mandiri: 1300062044600</b>
+    </div>
+    
+    <button type="button" class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
+  </form>
+</div>
 
 <script>
 function loadCart(){
@@ -205,7 +243,6 @@ window.onload = loadCart;
 
 </body>
 </html>
-
 
 
 
