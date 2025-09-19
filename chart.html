@@ -2,326 +2,201 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keranjang Belanja - Grosir Baleendah</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f6f9;
-      color: #333;
-    }
-    header {
-      background: #0a1327;
-      color: white;
-      text-align: center;
-      padding: 15px;
-    }
-    header h1 { margin: 0; font-size: 36px; }
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h2 { margin-top: 0; text-align: center; font-size: 28px; }
+    body {font-family: Arial, sans-serif; margin:0; padding:10px; background:#f5f5f5;}
+    h1 {text-align:center; color:#df0901; font-size:22px; margin-bottom:15px;}
 
-    /* Produk Card */
+    /* Card produk */
     .cart-item {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-      padding: 15px 0;
-      gap: 15px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:#fff; padding:10px; margin-bottom:10px;
+      border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1);
     }
-    .cart-item:last-child { border-bottom: none; }
-    .cart-item img {
-      width: 90px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 8px;
-      background: #f2f2f2;
-    }
-    .item-details {
-      flex: 1;
-    }
-    .item-details h3 {
-      margin: 0 0 5px;
-      font-size: 20px;
-    }
-    .item-details .price {
-      color: #df0901;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .item-actions {
-      text-align: center;
-    }
+    .cart-item img {width:70px; height:70px; object-fit:cover; border-radius:6px; margin-right:10px;}
+    .item-info {flex:1;}
+    .item-info h3 {margin:0; font-size:15px;}
+    .item-info p {margin:3px 0; font-size:13px; color:#555;}
+    .item-actions {text-align:right;}
     .item-actions input {
-      width: 50px;
-      text-align: center;
-      font-size: 16px;
-      margin: 0 5px;
+      width:50px; padding:5px; text-align:center; border:1px solid #ccc; border-radius:4px;
     }
-    .item-actions button {
-      padding: 4px 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
+    .hapus-btn {
+      display:block; margin-top:5px;
+      background:#dc3545; color:#fff; border:none;
+      padding:5px 8px; border-radius:4px; cursor:pointer; font-size:12px;
     }
-    .btn-plus { background: #2c3e50; color: white; }
-    .btn-minus { background: #df0901; color: white; }
-    .btn-remove { background: #888; color: white; margin-top: 6px; display: block; }
+    .hapus-btn:hover {background:#b02a37;}
 
-    /* Ringkasan */
-    .summary {
-      margin-top: 20px;
-      padding-top: 10px;
-      border-top: 2px solid #eee;
-      font-size: 18px;
-    }
-    .summary div {
-      display: flex;
-      justify-content: space-between;
-      margin: 5px 0;
-    }
-    .summary .total {
-      font-size: 20px;
-      font-weight: bold;
-      color: #df0901;
-    }
+    .total-box {text-align:right; font-size:16px; margin:10px 0; font-weight:bold;}
 
-    /* Checkout */
-    .checkout {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 20px;
+    form {background:#fff; padding:15px; border-radius:8px; margin-top:15px;}
+    form h2 {font-size:18px; margin-top:0;}
+    form label {display:block; margin-top:10px; font-weight:bold; font-size:14px;}
+    form input, form select, form textarea {
+      width:100%; padding:10px; margin-top:5px;
+      border:1px solid #ccc; border-radius:4px; font-size:14px;
     }
-    .checkout label { font-weight: bold; margin-top: 8px; font-size: 16px; }
-    .checkout select, .checkout input, .checkout textarea {
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      width: 100%;
+    .rekening {background:#eee; padding:10px; margin:10px 0; border-radius:6px; font-size:14px;}
+    .checkout-btn {
+      display:block; width:100%; padding:14px; margin-top:15px;
+      background:#28a745; color:#fff; border:none; border-radius:6px;
+      font-size:16px; cursor:pointer;
     }
-    .checkout a, .checkout button {
-      text-align: center;
-      padding: 12px;
-      background: #df0901;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 18px;
+    .checkout-btn:hover {background:#218838;}
+
+    .back-btn {
+      display:inline-block; margin-bottom:15px; padding:10px 15px;
+      background:#007bff; color:#fff; border:none; border-radius:6px;
+      font-size:14px; text-decoration:none;
     }
-    .checkout a:hover, .checkout button:hover { background: #b30700; }
-    .rekening {
-      background: #f9f9f9;
-      padding: 10px;
-      margin-top: 15px;
-      border-radius: 6px;
-      font-size: 16px;
-      display: none; /* default sembunyi */
-    }
+    .back-btn:hover {background:#0056b3;}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Keranjang Belanja</h1>
-  </header>
 
-  <div class="container">
-    <h2>Daftar Belanja Anda</h2>
-    <div id="cartList"></div>
+<h1>Keranjang Belanja</h1>
+<a href="index.html" class="back-btn">⬅ Kembali Belanja</a>
 
-    <div class="summary" id="summaryBox"></div>
-
-    <div class="checkout">
-      <label for="nama">Nama Lengkap:</label>
-      <input type="text" id="nama" placeholder="Masukkan nama anda">
-
-      <label for="alamat">Alamat Lengkap:</label>
-      <textarea id="alamat" rows="3" placeholder="Masukkan alamat lengkap"></textarea>
-
-      <label for="nohp">No HP / WhatsApp:</label>
-      <input type="text" id="nohp" placeholder="08xxxxxxxxxx">
-
-      <label for="kecamatan">Pilih Kecamatan:</label>
-      <select id="kecamatan" onchange="renderCart()">
-        <option value="">-- Pilih Kecamatan --</option>
-        <option value="Baleendah">Baleendah - Rp 10.000</option>
-        <option value="Pameungpeuk">Pameungpeuk - Rp 15.000</option>
-        <option value="Dayeuhkolot">Dayeuhkolot - Rp 15.000</option>
-        <option value="Bojongsoang">Bojongsoang - Rp 20.000</option>
-        <option value="Banjaran">Banjaran - Rp 20.000</option>
-      </select>
-
-      <label for="payment">Metode Pembayaran:</label>
-      <select id="payment" onchange="toggleRekening()">
-        <option value="">-- Pilih Metode Pembayaran --</option>
-        <option value="COD">COD (Bayar di Tempat)</option>
-        <option value="Transfer">Transfer Bank</option>
-      </select>
-
-      <div class="rekening" id="rekeningBox">
-        <b>Rekening Pembayaran:</b><br>
-        Mandiri: <b>1300062044600</b> a/n Aditia Suryawan<br>
-        BCA: <b>3371777626</b> a/n Aditia Suryawan<br>
-        <u>Mohon lampirkan bukti transfer di WhatsApp</u>
-      </div>
-
-      <a href="index.html">← Kembali Belanja</a>
-      <button onclick="checkout()">Checkout via WhatsApp</button>
+<div id="cartList">
+  <!-- Contoh item -->
+  <div class="cart-item">
+    <img src="image/sembako/minyak kita 1L.jpg" alt="Minyak Kita">
+    <div class="item-info">
+      <h3>Minyak Kita 1L</h3>
+      <p>Harga: 16.300</p>
+      <p class="subtotal">Subtotal: 32.600</p>
+    </div>
+    <div class="item-actions">
+      <input type="number" value="2" min="1" onchange="updateTotal()">
+      <button class="hapus-btn" onclick="hapusItem(this)">Hapus</button>
     </div>
   </div>
 
-  <script>
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  <div class="cart-item">
+    <img src="image/makanan instan/Indomie Goreng.jpg" alt="Indomie Goreng">
+    <div class="item-info">
+      <h3>Indomie Goreng</h3>
+      <p>Harga: 2.900</p>
+      <p class="subtotal">Subtotal: 14.500</p>
+    </div>
+    <div class="item-actions">
+      <input type="number" value="5" min="1" onchange="updateTotal()">
+      <button class="hapus-btn" onclick="hapusItem(this)">Hapus</button>
+    </div>
+  </div>
+</div>
 
-  const shippingRates = {
-    "Baleendah": 10000,
-    "Pameungpeuk": 15000,
-    "Dayeuhkolot": 15000,
-    "Bojongsoang": 20000,
-    "Banjaran": 20000
-  };
+<div class="total-box" id="totalBox">Total: Rp 47.100</div>
 
-  function renderCart(){
-    const cartList = document.getElementById("cartList");
-    const summaryBox = document.getElementById("summaryBox");
-    cartList.innerHTML = "";
-    summaryBox.innerHTML = "";
+<form id="checkoutForm">
+  <h2>Data Pembeli</h2>
+  <label>Nama Lengkap</label>
+  <input type="text" id="nama" required>
+  
+  <label>Alamat Lengkap</label>
+  <textarea id="alamat" required></textarea>
+  
+  <label>No HP</label>
+  <input type="text" id="nohp" required>
+  
+  <label>Kecamatan</label>
+  <select id="kecamatan" onchange="updateTotal()">
+    <option value="" data-ongkir="0">-- Pilih Kecamatan --</option>
+    <option value="Baleendah" data-ongkir="5000">Baleendah - Rp 5.000</option>
+    <option value="Dayeuhkolot" data-ongkir="7000">Dayeuhkolot - Rp 7.000</option>
+    <option value="Banjaran" data-ongkir="8000">Banjaran - Rp 8.000</option>
+  </select>
+  
+  <div class="total-box" id="ongkirBox">Ongkir: Rp 0</div>
+  <div class="total-box" id="grandTotalBox">Total Bayar: Rp 47.100</div>
+  
+  <label>Metode Pembayaran</label>
+  <select id="metode" onchange="toggleRekening()">
+    <option value="COD">COD (Bayar di Tempat)</option>
+    <option value="Transfer">Transfer</option>
+  </select>
+  
+  <div class="rekening" id="rekeningBox" style="display:none;">
+    Silakan transfer ke salah satu rekening:<br>
+    <b>BCA: 3371777626</b><br>
+    <b>Mandiri: 1300062044600</b>
+  </div>
+  
+  <button type="button" class="checkout-btn" onclick="checkout()">Checkout via WhatsApp</button>
+</form>
 
-    let subtotal = 0;
+<script>
+function updateTotal(){
+  let items = document.querySelectorAll(".cart-item");
+  let total = 0;
+  items.forEach(item=>{
+    let harga = parseInt(item.querySelector("p").innerText.replace("Harga: ","").replace(".",""));
+    let qty = parseInt(item.querySelector("input").value);
+    let subtotal = harga * qty;
+    item.querySelector(".subtotal").innerText = "Subtotal: " + subtotal.toLocaleString();
+    total += subtotal;
+  });
 
-    cart.forEach((item, index) => {
-      const itemSubtotal = item.price * item.qty;
-      subtotal += itemSubtotal;
+  let kecamatanSelect = document.getElementById("kecamatan");
+  let ongkir = parseInt(kecamatanSelect.options[kecamatanSelect.selectedIndex]?.dataset.ongkir || 0);
 
-      cartList.innerHTML += `
-        <div class="cart-item">
-          <img src="image/sembako/beras.png" alt="Beras">
-          <div class="item-details">
-            <h3>${item.name}</h3>
-            <div class="price">Rp ${item.price.toLocaleString()}</div>
-            <div>Subtotal: Rp ${itemSubtotal.toLocaleString()}</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn-minus" onclick="minusItem(${index})">-</button>
-            <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
-            <button class="btn-plus" onclick="plusItem(${index})">+</button>
-            <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
-          </div>
-        </div>
-      `;
-    });
+  document.getElementById("totalBox").innerText = "Total: Rp " + total.toLocaleString();
+  document.getElementById("ongkirBox").innerText = "Ongkir: Rp " + ongkir.toLocaleString();
+  document.getElementById("grandTotalBox").innerText = "Total Bayar: Rp " + (total+ongkir).toLocaleString();
+}
 
-    const kecamatan = document.getElementById("kecamatan").value;
-    const ongkir = shippingRates[kecamatan] || 0;
-    const total = subtotal + ongkir;
+function hapusItem(btn){
+  btn.closest(".cart-item").remove();
+  updateTotal();
+}
 
-    summaryBox.innerHTML = `
-      <div><span>Subtotal</span><span>Rp ${subtotal.toLocaleString()}</span></div>
-      <div><span>Ongkir ${kecamatan || '-'}</span><span>Rp ${ongkir.toLocaleString()}</span></div>
-      <div class="total"><span>Total</span><span>Rp ${total.toLocaleString()}</span></div>
-    `;
+function toggleRekening(){
+  let metode = document.getElementById("metode").value;
+  document.getElementById("rekeningBox").style.display = (metode=="Transfer") ? "block" : "none";
+}
+
+function checkout(){
+  let nama = document.getElementById("nama").value;
+  let alamat = document.getElementById("alamat").value;
+  let nohp = document.getElementById("nohp").value;
+  let kecamatan = document.getElementById("kecamatan").value;
+  let metode = document.getElementById("metode").value;
+
+  let items = document.querySelectorAll(".cart-item");
+  if(items.length === 0){
+    alert("Keranjang masih kosong!");
+    return;
   }
 
-  function updateQty(index, value){
-    let qty = parseInt(value);
-    if(isNaN(qty) || qty < 1) qty = 1;
-    if(qty > cart[index].stock) {
-      alert("Stok tidak mencukupi! Maksimal: " + cart[index].stock);
-      qty = cart[index].stock;
-    }
-    cart[index].qty = qty;
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
+  let pesan = "Halo, saya ingin pesan:\n";
+  items.forEach(item=>{
+    let produk = item.querySelector("h3").innerText;
+    let qty = item.querySelector("input").value;
+    pesan += "- " + produk + " x" + qty + "\n";
+  });
+
+  let total = document.getElementById("grandTotalBox").innerText;
+  pesan += "\n" + total;
+  pesan += "\nNama: " + nama;
+  pesan += "\nAlamat: " + alamat + ", " + kecamatan;
+  pesan += "\nNo HP: " + nohp;
+  pesan += "\nMetode Bayar: " + metode;
+
+  if(metode=="Transfer"){
+    pesan += "\nRekening tujuan: BCA 3371777626 / Mandiri 1300062044600";
   }
 
-  function plusItem(index){
-    if(cart[index].qty < cart[index].stock){
-      cart[index].qty++;
-    } else {
-      alert("Stok habis untuk produk: " + cart[index].name);
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
-  }
+  let url = "https://wa.me/628997944479?text=" + encodeURIComponent(pesan);
+  window.open(url, "_blank");
+}
 
-  function minusItem(index){
-    if(cart[index].qty > 1){
-      cart[index].qty--;
-    } else {
-      cart.splice(index, 1);
-    }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
-  }
+updateTotal();
+</script>
 
-  function removeItem(index){
-    cart.splice(index, 1);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCart();
-  }
-
-  function toggleRekening(){
-    const payment = document.getElementById("payment").value;
-    const rekeningBox = document.getElementById("rekeningBox");
-    rekeningBox.style.display = payment === "Transfer" ? "block" : "none";
-  }
-
-  function checkout(){
-    if(cart.length === 0){
-      alert("Keranjang masih kosong!");
-      return;
-    }
-    const nama = document.getElementById("nama").value.trim();
-    const alamat = document.getElementById("alamat").value.trim();
-    const nohp = document.getElementById("nohp").value.trim();
-    const kecamatan = document.getElementById("kecamatan").value;
-    const payment = document.getElementById("payment").value;
-
-    if(!nama || !alamat || !nohp || !kecamatan || !payment){
-      alert("Lengkapi semua data pesanan terlebih dahulu!");
-      return;
-    }
-
-    let message = `Assalamu'alaikum, saya ingin pesan:%0A`;
-    cart.forEach(item => {
-      message += `- ${item.name} (${item.qty} x Rp${item.price.toLocaleString()})%0A`;
-    });
-
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const ongkir = shippingRates[kecamatan] || 0;
-    const total = subtotal + ongkir;
-
-    message += `%0ASubtotal: Rp ${subtotal.toLocaleString()}`;
-    message += `%0AOngkir (${kecamatan}): Rp ${ongkir.toLocaleString()}`;
-    message += `%0ATotal Belanja: Rp ${total.toLocaleString()}`;
-    message += `%0AMetode Pembayaran: ${payment}`;
-    message += `%0A%0A📌 Data Pemesan:%0ANama: ${nama}%0AAlamat: ${alamat}%0ANo HP: ${nohp}`;
-
-    if(payment === "Transfer"){
-      message += `%0A%0A💳 Mohon lakukan transfer ke rekening yang tertera di website dan lampirkan bukti transfer.`;
-    }
-
-    window.open(`https://wa.me/628997944479?text=${message}`, "_blank");
-  }
-
-  renderCart();
-  </script>
 </body>
 </html>
-
 
 
 
