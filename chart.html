@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keranjang Belanja - Grosir Baleendah</title>
   <style>
     body {
@@ -18,7 +17,8 @@
       text-align: center;
       padding: 15px;
     }
-    header h1 { margin: 0; font-size: 36px; }
+    header h1 { margin: 0; font-size: 40px; }
+
     .container {
       max-width: 900px;
       margin: 20px auto;
@@ -27,9 +27,10 @@
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    h2 { margin-top: 0; text-align: center; font-size: 28px; }
 
-    /* Produk Card */
+    h2 { margin-top: 0; text-align: center; font-size: 30px; }
+
+    /* CART LIST ala Tokopedia */
     .cart-item {
       display: flex;
       align-items: center;
@@ -37,77 +38,89 @@
       padding: 15px 0;
       gap: 15px;
     }
-    .cart-item:last-child { border-bottom: none; }
     .cart-item img {
-      width: 90px;
-      height: 90px;
+      width: 80px;
+      height: 80px;
       object-fit: cover;
       border-radius: 8px;
-      background: #f2f2f2;
+      border: 1px solid #ccc;
     }
-    .item-details {
+    .cart-info {
       flex: 1;
     }
-    .item-details h3 {
-      margin: 0 0 5px;
-      font-size: 20px;
+    .cart-info h3 {
+      margin: 0;
+      font-size: 22px;
     }
-    .item-details .price {
-      color: #df0901;
-      font-weight: bold;
+    .cart-info p {
+      margin: 3px 0;
       font-size: 18px;
+      color: #666;
     }
-    .item-actions {
-      text-align: center;
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
     }
-    .item-actions input {
+    .qty-control button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      background: #eee;
+    }
+    .qty-control input {
       width: 50px;
       text-align: center;
-      font-size: 16px;
-      margin: 0 5px;
+      font-size: 18px;
+      padding: 3px;
     }
-    .item-actions button {
-      padding: 4px 10px;
+    .cart-subtotal {
+      font-weight: bold;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+    .btn-remove {
+      background: #df0901;
+      color: white;
       border: none;
-      border-radius: 4px;
+      padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
+      margin-left: 10px;
     }
-    .btn-plus { background: #2c3e50; color: white; }
-    .btn-minus { background: #df0901; color: white; }
-    .btn-remove { background: #888; color: white; margin-top: 6px; display: block; }
 
-    /* Ringkasan */
+    /* summary */
     .summary {
-      margin-top: 20px;
-      padding-top: 10px;
-      border-top: 2px solid #eee;
-      font-size: 18px;
+      text-align: right;
+      margin-top: 15px;
+      font-size: 20px;
     }
-    .summary div {
-      display: flex;
-      justify-content: space-between;
+    .summary p {
       margin: 5px 0;
     }
-    .summary .total {
-      font-size: 20px;
-      font-weight: bold;
-      color: #df0901;
+    .summary b {
+      font-size: 22px;
+      color: #0a1327;
     }
 
-    /* Checkout */
+    /* checkout form */
     .checkout {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 20px;
+      margin-top: 25px;
     }
-    .checkout label { font-weight: bold; margin-top: 8px; font-size: 16px; }
+    .checkout label { font-weight: bold; margin-top: 8px; font-size: 18px; }
     .checkout select, .checkout input, .checkout textarea {
       padding: 8px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 16px;
+      font-size: 18px;
       width: 100%;
     }
     .checkout a, .checkout button {
@@ -120,16 +133,17 @@
       text-decoration: none;
       font-weight: bold;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
     }
     .checkout a:hover, .checkout button:hover { background: #b30700; }
+
     .rekening {
       background: #f9f9f9;
       padding: 10px;
       margin-top: 15px;
       border-radius: 6px;
-      font-size: 16px;
-      display: none; /* default sembunyi */
+      font-size: 18px;
+      display: none;
     }
   </style>
 </head>
@@ -141,7 +155,6 @@
   <div class="container">
     <h2>Daftar Belanja Anda</h2>
     <div id="cartList"></div>
-
     <div class="summary" id="summaryBox"></div>
 
     <div class="checkout">
@@ -198,8 +211,6 @@
     const cartList = document.getElementById("cartList");
     const summaryBox = document.getElementById("summaryBox");
     cartList.innerHTML = "";
-    summaryBox.innerHTML = "";
-
     let subtotal = 0;
 
     cart.forEach((item, index) => {
@@ -208,17 +219,17 @@
 
       cartList.innerHTML += `
         <div class="cart-item">
-          <img src="${item.image}" alt="${item.name}">
-          <div class="item-details">
+          <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.name}">
+          <div class="cart-info">
             <h3>${item.name}</h3>
-            <div class="price">Rp ${item.price.toLocaleString()}</div>
-            <div>Subtotal: Rp ${itemSubtotal.toLocaleString()}</div>
-          </div>
-          <div class="item-actions">
-            <button class="btn-minus" onclick="minusItem(${index})">-</button>
-            <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
-            <button class="btn-plus" onclick="plusItem(${index})">+</button>
-            <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
+            <p>Rp ${item.price.toLocaleString()}</p>
+            <div class="qty-control">
+              <button onclick="minusItem(${index})">-</button>
+              <input type="number" min="1" max="${item.stock}" value="${item.qty}" onchange="updateQty(${index}, this.value)">
+              <button onclick="plusItem(${index})">+</button>
+              <span class="cart-subtotal">Rp ${itemSubtotal.toLocaleString()}</span>
+              <button class="btn-remove" onclick="removeItem(${index})">Hapus</button>
+            </div>
           </div>
         </div>
       `;
@@ -229,19 +240,16 @@
     const total = subtotal + ongkir;
 
     summaryBox.innerHTML = `
-      <div><span>Subtotal</span><span>Rp ${subtotal.toLocaleString()}</span></div>
-      <div><span>Ongkir ${kecamatan || '-'}</span><span>Rp ${ongkir.toLocaleString()}</span></div>
-      <div class="total"><span>Total</span><span>Rp ${total.toLocaleString()}</span></div>
+      <p>Subtotal: Rp ${subtotal.toLocaleString()}</p>
+      <p>Ongkir (${kecamatan || '-'}) : Rp ${ongkir.toLocaleString()}</p>
+      <p><b>Total: Rp ${total.toLocaleString()}</b></p>
     `;
   }
 
   function updateQty(index, value){
     let qty = parseInt(value);
     if(isNaN(qty) || qty < 1) qty = 1;
-    if(qty > cart[index].stock) {
-      alert("Stok tidak mencukupi! Maksimal: " + cart[index].stock);
-      qty = cart[index].stock;
-    }
+    if(qty > cart[index].stock) qty = cart[index].stock;
     cart[index].qty = qty;
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
@@ -250,8 +258,6 @@
   function plusItem(index){
     if(cart[index].qty < cart[index].stock){
       cart[index].qty++;
-    } else {
-      alert("Stok habis untuk produk: " + cart[index].name);
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
@@ -275,8 +281,7 @@
 
   function toggleRekening(){
     const payment = document.getElementById("payment").value;
-    const rekeningBox = document.getElementById("rekeningBox");
-    rekeningBox.style.display = payment === "Transfer" ? "block" : "none";
+    document.getElementById("rekeningBox").style.display = (payment === "Transfer") ? "block" : "none";
   }
 
   function checkout(){
@@ -321,12 +326,6 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
